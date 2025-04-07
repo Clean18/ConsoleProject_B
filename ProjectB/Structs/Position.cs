@@ -27,5 +27,15 @@ namespace ProjectB.Structs
 		{
 			return left.x != right.x || left.y != right.y;
 		}
+
+		public static Position operator +(Position pos, Direction dir)
+		{
+			return new Position(pos.x + dir.x, pos.y + dir.y);
+		}
+
+		public static Position operator -(Position pos, Direction dir)
+		{
+			return new Position(pos.x - dir.x, pos.y - dir.y);
+		}
 	}
 }

@@ -15,9 +15,10 @@ namespace ProjectB.Entities
 
 		public Player(char sprite,
 			Position position,
+			Direction direction,
 			ConsoleColor color = ConsoleColor.White,
 			ConsoleColor bgColor = ConsoleColor.Black)
-			: base(sprite, position, color, bgColor)
+			: base(sprite, position, direction, color, bgColor)
 		{
 			vision = 4;
 			visionX = vision * 2;

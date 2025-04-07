@@ -9,17 +9,18 @@ namespace ProjectB.Entities
 {
 	public class MoveObject : Entity
 	{
-		Position startPos;
-		Position endPos;
-		Position targetPos;
+		Position startPos;	// 시작 위치 (첫 위치)
+		Position endPos;	// 도착 위치
+		Position targetPos; // 이동할 위치
 
 		bool isStart;
 		public MoveObject(char sprite,
 			Position position,
 			Position endPos,
+			Direction direction,
 			ConsoleColor color = ConsoleColor.White,
 			ConsoleColor bgColor = ConsoleColor.Black)
-			: base(sprite, position, color, bgColor)
+			: base(sprite, position, direction, color, bgColor)
 		{
 			this.startPos = position;
 			this.endPos = endPos;
