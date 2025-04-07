@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ProjectB.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -56,6 +57,39 @@ namespace ProjectB
 						Console.Write(currentMap[y][x]);
 				}
 			}
+		}
+
+		public static void PrintObject()
+		{
+			var player = Game.Player;
+			var currentObjects = Map.GetMoveObjects(Game.sceneTable.Peek());
+			foreach (var moveObj in currentObjects)
+			{
+				// 시야 범위 안에 있는 오브젝트만 출력
+				int dx = moveObj.position.x - player.position.x;
+				int dy = moveObj.position.y - player.position.y;
+
+				if (Math.Abs(dx) <= player.visionX && Math.Abs(dy) <= player.visionY)
+				{
+					int drawX = dx + player.visionX;
+					int drawY = dy + player.visionY;
+
+					Console.SetCursorPosition(drawX, drawY);
+					Console.ForegroundColor = moveObj.color;
+					Console.BackgroundColor = moveObj.bgColor;
+					Console.Write(moveObj.sprite);
+					Console.ResetColor();
+				}
+			}
+		}
+
+		public static void PrintPlayer(Player player)
+		{
+			Console.SetCursorPosition(player.visionX, player.visionY);
+			Console.ForegroundColor = player.color;
+			Console.BackgroundColor = player.bgColor;
+			Console.Write(player.sprite);
+			Console.ResetColor();
 		}
 	}
 }

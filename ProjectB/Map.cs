@@ -1,4 +1,5 @@
 ﻿using ProjectB.Entities;
+using ProjectB.Structs;
 
 namespace ProjectB
 {

@@ -1,4 +1,5 @@
 ﻿using ProjectB.Entities;
+using ProjectB.Structs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -70,14 +71,31 @@ namespace ProjectB
 				case Scene.Field:
 					Print.PrintMap();
 					Print.PrintObject();
-					Print.PrintPlayer();
+					Print.PrintPlayer(player!);
 					break;
 			}
 		}
 
 		static void Update(ConsoleKey input)
 		{
+			switch (input)
+			{
+				case ConsoleKey.UpArrow:
+					player!.position.y--;
+					break;
 
+				case ConsoleKey.DownArrow:
+					player!.position.y++;
+					break;
+
+				case ConsoleKey.LeftArrow:
+					player!.position.x--;
+					break;
+
+				case ConsoleKey.RightArrow:
+					player!.position.x++;
+					break;
+			}
 		}
     }
 }
