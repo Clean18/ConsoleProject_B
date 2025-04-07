@@ -36,22 +36,23 @@ namespace ProjectB
 				}
 			}
 		}
-		public static void PrintMap()
+		// TODO : 맵출력을 항상 하다보니 깜빡임 해결하기
+		public static void PrintMap(Player player)
 		{
-			var player = Game.Player;
-			var currentMap = Map.GetMapData(Game.sceneTable.Peek());
+			List<string> currentMap = Map.GetMapData(Game.sceneTable.Peek());
 
+			// 플레이어 시야 내의 맵의 부분만 출력
 			for (int y = player.position.y - player.visionY; y <= player.position.y + player.visionY; y++)
 			{
 				for (int x = player.position.x - player.visionX; x <= player.position.x + player.visionX; x++)
 				{
-					// 콘솔 출력 위치
+					// 콘솔 출력 위치 조정
 					int drawX = x - (player.position.x - player.visionX);
 					int drawY = y - (player.position.y - player.visionY);
 					Console.SetCursorPosition(drawX, drawY);
 
-					// 맵 범위를 벗어나면 공백
-					if (x < 0 || x >= currentMap[0].Length || y < 0 || y >= currentMap.Count)
+					// 예외처리 맵 범위를 벗어나면 공백
+					if ((x < 0) || (x >= currentMap[0].Length) || (y < 0) || (y >= currentMap.Count))
 						Console.Write(' ');
 					else
 						Console.Write(currentMap[y][x]);
@@ -84,6 +85,7 @@ namespace ProjectB
 			PrintEntity(player, player.visionX, player.visionY);
 		}
 
+		// 업캐스팅 출력
 		public static void PrintEntity(Entity entity, int cursorX, int cursorY)
 		{
 			Console.SetCursorPosition(cursorX, cursorY);

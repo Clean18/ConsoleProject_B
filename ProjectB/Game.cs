@@ -23,6 +23,7 @@ namespace ProjectB
 
 		public static void Run()
         {
+			Console.CursorVisible = false;
 			Init(); // 초기화
 
 			// Game Logic
@@ -57,6 +58,8 @@ namespace ProjectB
 			// TODO : 플레이어 클래스 시작 위치를 맵별로 적용하게 하기
 			player = new Player('P', new Position(3, 3), color: ConsoleColor.Green); // 플레이어 초기화
 
+			Map.LoadAllMaps(); // mapData 를 Maps폴더에서 txt파일로 초기화
+
 			sceneTable.Push(Scene.Start); // 첫 시작은 Start
 		}
 
@@ -69,7 +72,7 @@ namespace ProjectB
 					break;
 
 				case Scene.Field:
-					Print.PrintMap();
+					Print.PrintMap(player!);
 					Print.PrintObject();
 					Print.PrintPlayer(player!);
 					break;
