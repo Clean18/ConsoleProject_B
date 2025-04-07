@@ -29,7 +29,6 @@ namespace ProjectB
 			// Game Logic
 			while (true)
 			{
-
 				if (sceneTable.Peek() == Scene.Field && Environment.TickCount - timer >= 500)
 				{
 					// 비동기 액션
@@ -72,9 +71,10 @@ namespace ProjectB
 					break;
 
 				case Scene.Field:
-					Print.PrintMap(player!);
-					Print.PrintObject();
-					Print.PrintPlayer(player!);
+					//Print.PrintMap(player!);
+					//Print.PrintObject();
+					//Print.PrintPlayer(player!);
+					Print.PrintAll(player!);
 					break;
 			}
 		}
@@ -83,6 +83,9 @@ namespace ProjectB
 		{
 			switch (input)
 			{
+				// TODO : 이동 제한 추가하기
+				// TODO : 플레이어 이동을 Player 클래스에 줘야하나
+				// 다른키입력도 받을 거생각해야하는데
 				case ConsoleKey.UpArrow:
 					player!.position.y--;
 					break;

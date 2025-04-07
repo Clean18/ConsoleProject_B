@@ -41,37 +41,6 @@ namespace ProjectB
 		}
 
 		private static Dictionary<Scene, List<string>> mapData = new Dictionary<Scene, List<string>>();
-		//{
-		//	[Scene.Field] = new List<string>
-		//	{
-		//		"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@",
-		//		"@                                                                                             @",
-		//		"@                                                                                             @",
-		//		"@                                                                                             @",
-		//		"@                                                                                             @",
-		//		"@                                                                                             @",
-		//		"@                                                                                             @",
-		//		"@                                                                                             @",
-		//		"@                                                                                             @",
-		//		"@                                                                                             @",
-		//		"@                                                                                             @",
-		//		"@                                                                                             @",
-		//		"@                                                                                             @",
-		//		"@                                                                                             @",
-		//		"@                                                                                             @",
-		//		"@                                                                                             @",
-		//		"@                                                                                             @",
-		//		"@                                                                                             @",
-		//		"@                                                                                             @",
-		//		"@                                                                                             @",
-		//		"@                                                                                             @",
-		//		"@                                                                                             @",
-		//		"@                                                                                             @",
-		//		"@                                                                                             @",
-		//		"@                                                                                             @",
-		//		"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@",
-		//	},
-		//};
 
 		public static List<string> GetMapData(Scene scene)
 		{
@@ -83,7 +52,7 @@ namespace ProjectB
 		{
 			[Scene.Field] = new List<MoveObject>
 			{
-				new MoveObject('O', new Position(3, 3), new Position(3, 7), color: ConsoleColor.Red),
+				new MoveObject('O', new Position(3, 3), new Position(3, 7), Direction.Down, color: ConsoleColor.Red),
 
 			},
 		};

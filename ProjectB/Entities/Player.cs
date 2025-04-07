@@ -24,5 +24,6 @@ namespace ProjectB.Entities
 			visionX = vision * 2;
 			visionY = vision;
 		}
+
 	}
 }
