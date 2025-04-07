@@ -4,7 +4,8 @@
     {
         static void Main(string[] args)
         {
-            Game.Run();
+			Console.WriteLine(Directory.GetCurrentDirectory());
+			Game.Run();
         }
     }
 }

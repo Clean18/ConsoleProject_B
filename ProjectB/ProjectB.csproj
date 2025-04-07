@@ -11,4 +11,10 @@
     <Folder Include="Maps\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Maps\Field.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
