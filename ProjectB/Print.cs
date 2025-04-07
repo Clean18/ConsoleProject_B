@@ -74,21 +74,22 @@ namespace ProjectB
 					int drawX = dx + player.visionX;
 					int drawY = dy + player.visionY;
 
-					Console.SetCursorPosition(drawX, drawY);
-					Console.ForegroundColor = moveObj.color;
-					Console.BackgroundColor = moveObj.bgColor;
-					Console.Write(moveObj.sprite);
-					Console.ResetColor();
+					PrintEntity(moveObj, drawX, drawY);
 				}
 			}
 		}
 
 		public static void PrintPlayer(Player player)
 		{
-			Console.SetCursorPosition(player.visionX, player.visionY);
-			Console.ForegroundColor = player.color;
-			Console.BackgroundColor = player.bgColor;
-			Console.Write(player.sprite);
+			PrintEntity(player, player.visionX, player.visionY);
+		}
+
+		public static void PrintEntity(Entity entity, int cursorX, int cursorY)
+		{
+			Console.SetCursorPosition(cursorX, cursorY);
+			Console.ForegroundColor = entity.color;
+			Console.BackgroundColor = entity.bgColor;
+			Console.Write(entity.sprite);
 			Console.ResetColor();
 		}
 	}
