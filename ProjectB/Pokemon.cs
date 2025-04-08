@@ -65,14 +65,16 @@ namespace ProjectB
 		public PokeType PokeType1 { get; set; } // 타입1
 		public PokeType PokeType2 { get; set; } // 타입2
 
-		
-		public Pokemon(int id, string name, int level, Gender gender, PokemonStat pokemonStat, BaseStat bastStat, IV iv, PokeType type1, PokeType type2)
+		public delegate void LevelupEvent(Pokemon pokemon);
+		public event LevelupEvent? OnLevelup;
+
+		public Pokemon(int id, string name, int level, Gender gender, BaseStat baseStat, IV iv, PokeType type1, PokeType type2)
 		{
 			Id = id;
 			Name = name;
 			Level = level;
 			Gender = gender;
-			BaseStat = bastStat;
+			BaseStat = baseStat;
 			IV = iv;
 			PokeType1 = type1;
 			PokeType2 = type2;
@@ -81,10 +83,10 @@ namespace ProjectB
 			CurExp = 0;
 			NextExp = GetNextEXP(level);
 			State = State.OK;
-
 			Hp = MaxHp;
 		}
 
+		// 개체값 종족값 레벨을 계산해서 기본 스탯 반환
 		private PokemonStat GetStat()
 		{
 			return new PokemonStat(
@@ -97,26 +99,38 @@ namespace ProjectB
 			);
 		}
 
-
 		private int GetNextEXP(int level)
 		{
 			// TODO : 경험치 테이블
 			return level * level * 10;
 		}
 
+		public void Levelup()
+		{
+			// 100이 아닐때만 레벨업
+			if (this.Level < 100)
+				this.Level++;
+
+			int oldMaxHp = this.MaxHp; // 레벨업 전 최대체력
+
+			this.PokemonStat = GetStat(); // 스탯 재할당
+			NextExp = GetNextEXP(this.Level); // 다음 필요경험치 변경
+
+
+			// 체력은 레벨업 전 체력에서 레벨업 후 상승한 체력만큼만 증가
+			int newHp = oldMaxHp - this.MaxHp;
+
+			this.Hp += newHp;
+			// 증가한 체력이 최대체력 안넘게
+			if (this.Hp > this.MaxHp)
+				this.Hp = this.MaxHp;
+
+			OnLevelup?.Invoke(this);
+		}
+
 		// 기술 4개 보관
 		public Skill[]? Skills { get; set; }
-		public virtual void UseSkill(Pokemon attacker, Skill skill, Pokemon defender)
-		{
-			// pp 체크 후 소모
-			if (skill.CurPP < 0)
-				return;
-			// 명중 체크
-			// 대미지 계산 (물리 or 특공) && 자속
-			// defender 체력 감소
-			// status 체크
-			// 기절 체크
-		}
+		public abstract void UseSkill(Pokemon attacker, Skill skill, Pokemon defender);
 
 
 	}

@@ -104,7 +104,7 @@ namespace ProjectB
 		{
 			// 출력할 맵, 오브젝트, 플레이어(매개변수)
 			List<string> currentMap = Data.GetMapData(Game.sceneTable.Peek());
-			List<MoveObject> currentObjects = Data.GetMoveObjects(Game.sceneTable.Peek());
+			List<Entity> currentObjects = Data.GetEntitiesData(Game.sceneTable.Peek());
 
 			// 플레이어 시야 범위 = 출력 크기
 			int width = player.visionX * 2 + 1;

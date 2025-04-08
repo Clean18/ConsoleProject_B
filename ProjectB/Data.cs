@@ -7,14 +7,15 @@ namespace ProjectB
 	public static class Data
 	{
 		private static Dictionary<Scene, List<string>>? mapData;
-		private static Dictionary<Scene, List<MoveObject>>? mapMoveObjectData;
+		private static Dictionary<Scene, List<Entity>>? mapEntityData;
 		private static Dictionary<string, Item>? itemData;
+		private static Dictionary<Scene, FieldItem>? fieldItemData;
 
 		public static void DataInit()
 		{
 			MapInit();
-			MapMoveObjectInit();
 			ItemInit();
+			MapEntityInit();
 		}
 
 		static void MapInit()
@@ -54,13 +55,15 @@ namespace ProjectB
 			}
 		} // 모든 txt 불러와서 Map 초기화
 
-		static void MapMoveObjectInit() // MoveObject 초기화
+		static void MapEntityInit() // MoveObject 초기화
 		{
-			mapMoveObjectData = new Dictionary<Scene, List<MoveObject>>()
+			mapEntityData = new Dictionary<Scene, List<Entity>>()
 			{
-				[Scene.Field] = new List<MoveObject>
+				[Scene.Field] = new List<Entity>
 				{
 					new MoveObject('O', new Position(3, 3), new Position(3, 7), Direction.Down, color: ConsoleColor.Red),
+					new FieldItem('B', new Position(2, 2), Direction.Down, itemData!["몬스터볼"], color: ConsoleColor.Red),
+					new FieldItem('B', new Position(2, 3), Direction.Down, itemData!["몬스터볼"], color: ConsoleColor.Red),
 
 				},
 			};
@@ -70,15 +73,20 @@ namespace ProjectB
 		{
 			itemData = new Dictionary<string, Item>
 			{
-				[""] = new Item1(),
+				["몬스터볼"] = new PokeBall(),
 			};
 		}
 
-		public static List<string> GetMapData(Scene scene) => mapData[scene];
+		public static List<string> GetMapData(Scene scene) => mapData![scene];
 		public static List<MoveObject> GetMoveObjects(Scene scene)
 		{
 			// 없는 씬이 있어도 에러안나게 새로운 리스트 반환
-			return mapMoveObjectData.ContainsKey(scene) ? mapMoveObjectData[scene] : new List<MoveObject>();
+			if (!mapEntityData!.ContainsKey(scene))
+				return new List<MoveObject>();
+			// Entity 테이블에서 MoveObject만 반환
+			else
+				return mapEntityData[scene].OfType<MoveObject>().ToList();
 		}
+		public static List<Entity> GetEntitiesData(Scene scene) => mapEntityData![scene];
 	}
 }

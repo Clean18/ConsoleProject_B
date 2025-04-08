@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProjectB
+namespace ProjectB.Interfaces
 {
     public interface IUse
     {

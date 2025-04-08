@@ -1,4 +1,5 @@
-﻿using ProjectB.Structs;
+﻿using ProjectB.Interfaces;
+using ProjectB.Structs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ProjectB.Entities
 {
-	public class MoveObject : Entity
+	public class MoveObject : Entity, IInteract
 	{
 		Position startPos;	// 시작 위치 (첫 위치)
 		Position endPos;	// 도착 위치
@@ -26,6 +27,11 @@ namespace ProjectB.Entities
 			this.endPos = endPos;
 			this.isStart = true;
 			this.targetPos = endPos;
+		}
+
+		public void Interact(Player player)
+		{
+			// 말걸면 배틀
 		}
 
 		public void Move()

@@ -22,6 +22,17 @@ namespace ProjectB
 		public int MaxPP { get; set; }				// 최대 PP
 		public int CurPP { get; set; }				// 현재 PP
 
+		public Skill(string name, PokeType pokeType, SkillType skillType, int damage, int accuracy, int maxPP, int curPP)
+		{
+			Name = name;
+			PokeType = pokeType;
+			SkillType = skillType;
+			Damage = damage;
+			Accuracy = accuracy;
+			MaxPP = maxPP;
+			CurPP = curPP;
+		}
+
 		public void Use()
 		{
 

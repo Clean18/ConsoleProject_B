@@ -81,8 +81,10 @@ namespace ProjectB
 
 		static void Update(ConsoleKey input)
 		{
-			List<string> mapData = Data.GetMapData(sceneTable.Peek());
-			player!.KeyHandler(input, mapData, currentObjects);
+			var currentScene = sceneTable.Peek();
+			List<string> mapData = Data.GetMapData(currentScene);
+			List<Entity> entityData = Data.GetEntitiesData(currentScene);
+			player!.KeyHandler(input, mapData, entityData);
 		}
 
 		
