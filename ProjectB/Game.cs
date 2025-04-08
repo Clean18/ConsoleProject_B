@@ -13,6 +13,8 @@ namespace ProjectB
 
 	public static class Game
     {
+		public static Random globalRandom = new Random();
+
 		public static Stack<Scene> sceneTable = new(); // 씬을 보관할 테이블
 
 		static int timer; // 비동기용 타이머

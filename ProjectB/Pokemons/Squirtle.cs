@@ -7,23 +7,29 @@ using System.Threading.Tasks;
 
 namespace ProjectB.Pokemons
 {
-	public class Bulbasaur : Pokemon
+	public class Squirtle : Pokemon
 	{
-		public Bulbasaur(int level)
+		public Squirtle(int level)
 			: base(
 				id: 1,
-				name: "이상해씨",
+				name: "꼬부기",
 				level: level,
-				baseStat: new BaseStat(hp: 45, attack: 49, defense: 49, speAttack: 65, speDefense: 65, speed: 45),
+				baseStat: new BaseStat(
+					hp: 44,
+					attack: 48,
+					defense: 65,
+					speAttack: 50,
+					speDefense: 64,
+					speed: 43),
 				iv: IV.GetRandomIV(), // 개체값은 랜덤 생성
-				type1: PokeType.Grass,
-				type2: PokeType.Poison
+				type1: PokeType.Water,
+				type2: PokeType.None
 			)
 		{
 			Skills = new Skill[]
 			{
 			new Skill("몸통박치기", PokeType.Normal, SkillType.Physical, 40, 100, 35, 35),
-			new Skill("덩굴채찍", PokeType.Grass, SkillType.Special, 45, 100, 25, 25)
+			new Skill("물대포", PokeType.Water, SkillType.Special, 40, 100, 25, 25)
 			};
 		}
 
@@ -32,5 +38,4 @@ namespace ProjectB.Pokemons
 			//skill.Use(attacker, defender);
 		}
 	}
-
 }

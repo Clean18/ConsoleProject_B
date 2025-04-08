@@ -8,8 +8,6 @@ namespace ProjectB.Structs
 { 
 	public struct IV
 	{
-		static Random ran = new Random();
-
 		public int hp;
 		public int attack;
 		public int defense;
@@ -30,7 +28,15 @@ namespace ProjectB.Structs
 		public static IV GetRandomIV()
 		{
 			// 개체값 랜덤 반환
-			return new IV(ran.Next(0, 32), ran.Next(0, 32), ran.Next(0, 32), ran.Next(0, 32), ran.Next(0, 32), ran.Next(0, 32));
+			return new IV
+				(
+					Game.globalRandom.Next(0, 32),	// 체력
+					Game.globalRandom.Next(0, 32),	// 공격
+					Game.globalRandom.Next(0, 32),	// 방어
+					Game.globalRandom.Next(0, 32),	// 특공
+					Game.globalRandom.Next(0, 32),	// 특방
+					Game.globalRandom.Next(0, 32)	// 스핏
+				);
 		}
 	}
 }

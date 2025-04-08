@@ -154,6 +154,9 @@ namespace ProjectB.Entities
 			{
 				// 레벨업
 			};
+
+			Console.SetCursorPosition(0, this.vision * 2 + 5);
+			Console.WriteLine($"{pokemon.Name} 을/를 얻었습니다.\n파티에 추가됩니다.");
 		}
 
 		public void AddItem(Item item)
@@ -173,7 +176,7 @@ namespace ProjectB.Entities
 					if (hasItem.CurCount > hasItem.MaxCount)
 						hasItem.CurCount = hasItem.MaxCount;
 
-					Console.SetCursorPosition(0, this.vision * 2 + 1);
+					Console.SetCursorPosition(0, this.vision * 2 + 5);
 					Console.WriteLine($"{item.Name} 을/를 {item.CurCount} 개 얻었습니다. ({hasItem.CurCount}개)");
 
 					return;
@@ -181,7 +184,7 @@ namespace ProjectB.Entities
 			}
 
 			// 없으면 새로 추가
-			Console.SetCursorPosition(0, this.vision * 2 + 1);
+			Console.SetCursorPosition(0, this.vision * 2 + 5);
 			Console.WriteLine($"{item.Name} 을/를 {item.CurCount} 개 얻었습니다.");
 			inven.Add(item);
 		}

@@ -7,23 +7,29 @@ using System.Threading.Tasks;
 
 namespace ProjectB.Pokemons
 {
-	public class Bulbasaur : Pokemon
+	public class Charmander : Pokemon
 	{
-		public Bulbasaur(int level)
+		public Charmander(int level)
 			: base(
 				id: 1,
-				name: "이상해씨",
+				name: "파이리",
 				level: level,
-				baseStat: new BaseStat(hp: 45, attack: 49, defense: 49, speAttack: 65, speDefense: 65, speed: 45),
+				baseStat: new BaseStat(
+					hp: 39,
+					attack: 52,
+					defense: 43,
+					speAttack: 60,
+					speDefense: 50,
+					speed: 65),
 				iv: IV.GetRandomIV(), // 개체값은 랜덤 생성
-				type1: PokeType.Grass,
-				type2: PokeType.Poison
+				type1: PokeType.Fire,
+				type2: PokeType.None
 			)
 		{
 			Skills = new Skill[]
 			{
 			new Skill("몸통박치기", PokeType.Normal, SkillType.Physical, 40, 100, 35, 35),
-			new Skill("덩굴채찍", PokeType.Grass, SkillType.Special, 45, 100, 25, 25)
+			new Skill("불꽃세례", PokeType.Fire, SkillType.Special, 45, 100, 25, 25)
 			};
 		}
 
@@ -32,5 +38,4 @@ namespace ProjectB.Pokemons
 			//skill.Use(attacker, defender);
 		}
 	}
-
 }

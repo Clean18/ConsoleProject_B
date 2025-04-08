@@ -121,8 +121,7 @@ namespace ProjectB
 
 		public static void PrintMenu(Player player)
 		{
-
-			// TODO : 메뉴 리스트
+			// TODO : 메뉴 리스트 / 씬추가해야됨
 			// 도감
 			// 현재 파티
 			// 가방

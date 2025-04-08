@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ProjectB
 {
-    public enum PokeType
+    public enum PokeType // 타입
     {
 		None,		// 없음
         Normal,     // 노말
@@ -28,8 +28,9 @@ namespace ProjectB
         Dark,       // 악
         Steel,      // 강철
     }
-	public enum Gender { Male, Female }
-	public enum State
+	public enum Gender // 성별
+	{ Male, Female }
+	public enum State // 상태이상
 	{
 		OK,			// 노말
 		Poison,		// 독
@@ -38,7 +39,7 @@ namespace ProjectB
 		Sleep,		// 수면
 		Paralysis	// 마비
 	}
-
+	
     public abstract class Pokemon
     {
         public int Id { get; set; } // 도감번호
@@ -68,12 +69,12 @@ namespace ProjectB
 		public delegate void LevelupEvent(Pokemon pokemon);
 		public event LevelupEvent? OnLevelup;
 
-		public Pokemon(int id, string name, int level, Gender gender, BaseStat baseStat, IV iv, PokeType type1, PokeType type2)
+		public Pokemon(int id, string name, int level, BaseStat baseStat, IV iv, PokeType type1, PokeType type2)
 		{
 			Id = id;
 			Name = name;
 			Level = level;
-			Gender = gender;
+			Gender = GetGender();
 			BaseStat = baseStat;
 			IV = iv;
 			PokeType1 = type1;
@@ -103,6 +104,11 @@ namespace ProjectB
 		{
 			// TODO : 경험치 테이블
 			return level * level * 10;
+		}
+
+		private Gender GetGender()
+		{
+			return Game.globalRandom.Next(2) == 0 ? Gender.Male : Gender.Female;
 		}
 
 		public void Levelup()
