@@ -38,7 +38,7 @@ namespace ProjectB
 		}
 		public static void PrintMap(Player player)
 		{
-			List<string> currentMap = Map.GetMapData(Game.sceneTable.Peek());
+			List<string> currentMap = Data.GetMapData(Game.sceneTable.Peek());
 
 			// 플레이어 시야 내의 맵의 부분만 출력
 			for (int y = player.position.y - player.visionY; y <= player.position.y + player.visionY; y++)
@@ -66,7 +66,7 @@ namespace ProjectB
 		public static void PrintObject()
 		{
 			var player = Game.Player;
-			var currentObjects = Map.GetMoveObjects(Game.sceneTable.Peek());
+			var currentObjects = Data.GetMoveObjects(Game.sceneTable.Peek());
 			foreach (var moveObj in currentObjects)
 			{
 				// 시야 범위 안에 있는 오브젝트만 출력
@@ -103,8 +103,8 @@ namespace ProjectB
 		public static void PrintAll(Player player)
 		{
 			// 출력할 맵, 오브젝트, 플레이어(매개변수)
-			List<string> currentMap = Map.GetMapData(Game.sceneTable.Peek());
-			List<MoveObject> currentObjects = Map.GetMoveObjects(Game.sceneTable.Peek());
+			List<string> currentMap = Data.GetMapData(Game.sceneTable.Peek());
+			List<MoveObject> currentObjects = Data.GetMoveObjects(Game.sceneTable.Peek());
 
 			// 플레이어 시야 범위 = 출력 크기
 			int width = player.visionX * 2 + 1;

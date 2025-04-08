@@ -13,6 +13,7 @@ namespace ProjectB.Entities
 		int vision;			// 플레이어 시야
 		public int visionX; // 플레이어 x 시야
 		public int visionY; // 플레이어 y 시야
+		// TODO : 돈
 
 		public Player(char sprite,
 			Position position,
