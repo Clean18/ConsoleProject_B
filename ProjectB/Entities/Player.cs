@@ -1,5 +1,6 @@
 ﻿using ProjectB.Interfaces;
 using ProjectB.Structs;
+using System.Numerics;
 
 namespace ProjectB.Entities
 {
@@ -33,7 +34,7 @@ namespace ProjectB.Entities
 			Party = new List<Pokemon>(6);
 		}
 
-		public void KeyHandler(ConsoleKey key, List<string> mapData, List<Entity> entity)
+		public void KeyHandler(ConsoleKey key)
 		{
 			// TODO : 씬에 따른 방향조절
 			// 필드일때 > 이동
@@ -45,41 +46,12 @@ namespace ProjectB.Entities
 			{
 				// 우선 필드만
 				case Scene.Field:
-					FieldInput(key, mapData, entity);
+					Scene currentScene = Game.sceneTable.Peek();
+					List<string> mapData = Data.GetMapData(currentScene);
+					List<Entity> entityData = Data.GetEntitiesData(currentScene);
+					FieldInput(key, mapData, entityData);
 					break;
-
 			}
-
-			//switch (key)
-			//{
-			//	case ConsoleKey.UpArrow:
-			//		Move(Direction.Up, mapData, entity);
-			//		break;
-
-			//	case ConsoleKey.DownArrow:
-			//		Move(Direction.Down, mapData, entity);
-			//		break;
-
-			//	case ConsoleKey.LeftArrow:
-			//		Move(Direction.Left, mapData, entity);
-			//		break;
-
-			//	case ConsoleKey.RightArrow:
-			//		Move(Direction.Right, mapData, entity);
-			//		break;
-
-			//	case ConsoleKey.Z:  // 선택, 예
-			//		Z(this.direction, mapData, entity);
-			//		break;
-
-			//	case ConsoleKey.X:  // 취소, 아니오
-			//		X(this.direction, mapData, entity);
-			//		break;
-
-			//	case ConsoleKey.Escape: // esc 메뉴
-			//		ESC();
-			//		break;
-			//}
 		}
 
 		void FieldInput(ConsoleKey key, List<string> mapData, List<Entity> entity)
@@ -93,6 +65,7 @@ namespace ProjectB.Entities
 				case ConsoleKey.RightArrow: Move(Direction.Right, mapData, entity); break;
 				// 상호작용
 				case ConsoleKey.Z: Z(this.direction, mapData, entity); break;
+				case ConsoleKey.Escape: ESC(); break;
 			}
 		}
 
@@ -167,9 +140,9 @@ namespace ProjectB.Entities
 			if (Game.sceneTable.Peek() == Scene.Field)
 			{
 				// TODO : 메뉴 활성화
+				Game.sceneTable.Push(Scene.Menu);
 			}
 		}
-
 		public void AddPokemon(Pokemon pokemon)
 		{
 			if (Party.Count >= 6)
@@ -196,7 +169,7 @@ namespace ProjectB.Entities
 					hasItem.CurCount = hasItem.CurCount + item.CurCount;
 
 					// 최대 수량만큼만
-					// 바닥에 아이템 사라짐
+					// 바닥에 있던 아이템 사라짐
 					if (hasItem.CurCount > hasItem.MaxCount)
 						hasItem.CurCount = hasItem.MaxCount;
 

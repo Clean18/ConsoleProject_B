@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace ProjectB
 {
     // 각 씬에서 메인 화면들
-	public enum Scene { Start, Field }
+	public enum Scene { Start, Field, Menu }
 
 	public static class Game
     {
@@ -42,7 +42,7 @@ namespace ProjectB
 				}
 
 				Render();
-
+				
 				if (Console.KeyAvailable)
 				{
 					Update(Console.ReadKey(true).Key);
@@ -71,20 +71,19 @@ namespace ProjectB
 					break;
 
 				case Scene.Field:
-					//Print.PrintMap(player!);
-					//Print.PrintObject();
-					//Print.PrintPlayer(player!);
 					Print.PrintAll(player!); // 하나로 통합
+					break;
+
+				case Scene.Menu:
+					Print.PrintMenu(player!);
 					break;
 			}
 		}
 
 		static void Update(ConsoleKey input)
 		{
-			var currentScene = sceneTable.Peek();
-			List<string> mapData = Data.GetMapData(currentScene);
-			List<Entity> entityData = Data.GetEntitiesData(currentScene);
-			player!.KeyHandler(input, mapData, entityData);
+			
+			player!.KeyHandler(input);
 		}
 
 		

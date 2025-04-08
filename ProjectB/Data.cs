@@ -10,6 +10,7 @@ namespace ProjectB
 		private static Dictionary<Scene, List<Entity>>? mapEntityData;
 		private static Dictionary<string, Item>? itemData;
 		private static Dictionary<Scene, FieldItem>? fieldItemData;
+		
 
 		public static void DataInit()
 		{
@@ -55,7 +56,7 @@ namespace ProjectB
 			}
 		} // 모든 txt 불러와서 Map 초기화
 
-		static void MapEntityInit() // MoveObject 초기화
+		static void MapEntityInit() // MoveObject 초기화 데이터 / 필드마다 생성할 아이템, 무브오브젝트 관리
 		{
 			mapEntityData = new Dictionary<Scene, List<Entity>>()
 			{
@@ -75,9 +76,11 @@ namespace ProjectB
 			itemData = new Dictionary<string, Item>
 			{
 				["몬스터볼"] = new PokeBall(),
+				["상처약"] = new Potion(),
 			};
 		}
 
+		// 씬을 key로 값을 받아오는 함수들
 		public static List<string> GetMapData(Scene scene) => mapData![scene];
 		public static List<MoveObject> GetMoveObjects(Scene scene)
 		{

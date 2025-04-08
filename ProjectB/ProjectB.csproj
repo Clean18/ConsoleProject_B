@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <Folder Include="Maps\" />
+    <Folder Include="Scenes\" />
   </ItemGroup>
 
   <ItemGroup>
