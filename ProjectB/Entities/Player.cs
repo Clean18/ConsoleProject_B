@@ -26,53 +26,57 @@ namespace ProjectB.Entities
 			visionY = vision;
 		}
 
-		public void KeyHandler(ConsoleKey key, char[,] mapData)
+		public void KeyHandler(ConsoleKey key, List<string> mapData, List<MoveObject> moveObjects)
 		{
 			switch (key)
 			{
 				// TODO : 이동 제한 추가하기
 				case ConsoleKey.UpArrow:
-					//this.position.y--;
-					Move(Direction.Up, mapData);
+					Move(Direction.Up, mapData, moveObjects);
 					break;
 
 				case ConsoleKey.DownArrow:
-					//this.position.y++;
-					Move(Direction.Down, mapData);
+					Move(Direction.Down, mapData, moveObjects);
 					break;
 
 				case ConsoleKey.LeftArrow:
-					//this.position.x--;
-					Move(Direction.Left, mapData);
+					Move(Direction.Left, mapData, moveObjects);
 					break;
 
 				case ConsoleKey.RightArrow:
-					//this.position.x++;
-					Move(Direction.Right, mapData);
+					Move(Direction.Right, mapData, moveObjects);
 					break;
 			}
 		}
 
-		void Move(Direction direction, char[,] mapData)
+		void Move(Direction direction, List<string> mapData, List<MoveObject> moveObject)
 		{
+			// 이동은 못해도 방향전환은 해야함
+			this.direction = direction;
 			Position nextPos = position + direction;
-			char tile = mapData[nextPos.y, nextPos.x];
 
+			// 맵 초과 제한
+			if ((nextPos.x < 0) || (nextPos.x >= mapData[position.y].Length ) || (nextPos.y < 0) || (nextPos.y >= mapData.Count))
+				return;
+
+			// 맵 체크
+			char tile = mapData[nextPos.y][nextPos.x];
 			switch (tile)
 			{
 				// 제한할 타일
-				// 맵 데이터만 가져오다보니 @는 이동못하지만
-				// O는 맵데이터에 없음
-				// 즉 > 버퍼맵을 가지고 있어야됨
 				case '@':
-				case 'O':
-					break;
-
-				// 이동 가능 타일
-				case ' ':
-					position = nextPos;
-					break;
+					return;
 			}
+
+			// 오브젝트 체크
+			foreach (var obj in moveObject)
+			{
+				// 이동할 위치에 오브젝트가 있으면 제한
+				if (obj.position == nextPos)
+					return;
+			}
+
+			position = nextPos;
 		}
 	}
 }

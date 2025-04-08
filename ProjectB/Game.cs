@@ -20,7 +20,6 @@ namespace ProjectB
 		static Player? player; // 플레이어 필드
 		public static Player Player { get { return player!; } } // 플레이어 프로퍼티, 콜하는 시점에선 null일 수가 없음 진짜임
 		static List<MoveObject> currentObjects => Map.GetMoveObjects(sceneTable.Peek()); // 현재 씬에 존재하는 무브 오브젝트 데이터
-		static char[,]? currentBuffer;
 
 		public static void Run()
         {
@@ -75,7 +74,7 @@ namespace ProjectB
 					//Print.PrintMap(player!);
 					//Print.PrintObject();
 					//Print.PrintPlayer(player!);
-					currentBuffer = Print.PrintAll(player!); // 하나로 통합
+					Print.PrintAll(player!); // 하나로 통합
 					break;
 			}
 		}
@@ -83,7 +82,7 @@ namespace ProjectB
 		static void Update(ConsoleKey input)
 		{
 			List<string> mapData = Map.GetMapData(sceneTable.Peek());
-			player!.KeyHandler(input, currentBuffer!);
+			player!.KeyHandler(input, mapData, currentObjects);
 		}
 
 		

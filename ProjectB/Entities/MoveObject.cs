@@ -46,18 +46,41 @@ namespace ProjectB.Entities
 			// isStart에 따라 x먼저 y먼저 이동
 			if (!isStart)
 			{
-				if (position.x < targetPos.x) position.x++;      // 우
-				else if (position.x > targetPos.x) position.x--; // 좌
-				else if (position.y < targetPos.y) position.y++; // 하
-				else if (position.y > targetPos.y) position.y--; // 상
+				if (position.x < targetPos.x) MoveCheck(Direction.Right);	   // position.x++; // 우
+				else if (position.x > targetPos.x) MoveCheck(Direction.Left);  // position.x--; // 좌
+				else if (position.y < targetPos.y) MoveCheck(Direction.Down);  // position.y++; // 하
+				else if (position.y > targetPos.y) MoveCheck(Direction.Up);    // position.y--; // 상
 			}
 			else
 			{
-				if (position.y > targetPos.y) position.y--;      // 상
-				else if (position.y < targetPos.y) position.y++; // 하
-				else if (position.x > targetPos.x) position.x--; // 좌
-				else if (position.x < targetPos.x) position.x++; // 우
+				if (position.y > targetPos.y) MoveCheck(Direction.Up);		   // position.y--; // 상
+				else if (position.y < targetPos.y) MoveCheck(Direction.Down);  // position.y++; // 하
+				else if (position.x > targetPos.x) MoveCheck(Direction.Left);  // position.x--; // 좌
+				else if (position.x < targetPos.x) MoveCheck(Direction.Right); // position.x++; // 우
 			}
+		}
+
+		void MoveCheck(Direction dir)
+		{
+			this.direction = dir;
+			Position nextPos = this.position + dir;
+			List<string> mapData = Map.GetMapData(Game.sceneTable.Peek());
+
+			if ((nextPos.x < 0) || (nextPos.x >= mapData[position.y].Length) || (nextPos.y < 0) || (nextPos.y >= mapData.Count))
+				return;
+
+			char tile = mapData[nextPos.y][nextPos.x];
+			switch (tile)
+			{
+				// 제한할 타일
+				case '@':
+					return;
+			}
+
+			if (nextPos == Game.Player.position)
+				return;
+
+			position = nextPos;
 		}
 	}
 }

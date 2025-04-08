@@ -100,7 +100,7 @@ namespace ProjectB
 		}
 
 
-		public static char[,] PrintAll(Player player)
+		public static void PrintAll(Player player)
 		{
 			// 출력할 맵, 오브젝트, 플레이어(매개변수)
 			List<string> currentMap = Map.GetMapData(Game.sceneTable.Peek());
@@ -129,16 +129,16 @@ namespace ProjectB
 					// 맵 범위 초과시
 					if ((mapX < 0) || (mapY < 0) || (mapY >= currentMap.Count) || (mapX >= currentMap[0].Length))
 					{
-						buffer[y, x] = ' ';
 						fgBuffer[y, x] = ConsoleColor.Black;
 						bgBuffer[y, x] = ConsoleColor.DarkBlue;
+						buffer[y, x] = ' ';
 					}
 					else
 					{
 						// 맵 타일 출력
-						buffer[y, x] = currentMap[mapY][mapX];
 						fgBuffer[y, x] = ConsoleColor.White;
 						bgBuffer[y, x] = ConsoleColor.Black;
+						buffer[y, x] = currentMap[mapY][mapX];
 					}
 				}
 			}
@@ -152,9 +152,9 @@ namespace ProjectB
 
 				if ((dx >= 0) && (dx < width) && (dy >= 0) && (dy < height))
 				{
-					buffer[dy, dx] = obj.sprite;
 					fgBuffer[dy, dx] = obj.color;
 					bgBuffer[dy, dx] = obj.bgColor;
+					buffer[dy, dx] = obj.sprite;
 				}
 			}
 
@@ -162,9 +162,9 @@ namespace ProjectB
 			// 플레이어 위치는 항상 고정
 			int px = player.visionX;
 			int py = player.visionY;
-			buffer[py, px] = player.sprite;
 			fgBuffer[py, px] = player.color;
 			bgBuffer[py, px] = player.bgColor;
+			buffer[py, px] = player.sprite;
 
 			// 누적된 데이터 전부 출력 (맵, 무브오브젝트, 플레이어)
 			Console.SetCursorPosition(0, 0);
@@ -179,8 +179,6 @@ namespace ProjectB
 				Console.WriteLine();
 			}
 			Console.ResetColor();
-
-			return buffer;
 		}
 	}
 }
