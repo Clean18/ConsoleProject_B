@@ -188,5 +188,6 @@ namespace ProjectB.Entities
 			Console.WriteLine($"{item.Name} 을/를 {item.CurCount} 개 얻었습니다.");
 			inven.Add(item);
 		}
+
 	}
 }

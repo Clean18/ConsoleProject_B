@@ -1,9 +1,13 @@
 ﻿using ProjectB.Entities;
+using System.IO;
 
 namespace ProjectB
 {
 	public static class Print
 	{
+		static int startX = 5;
+		static int startY = 3;
+
 		public static void PrintStart()
 		{
 			Console.Clear();
@@ -40,8 +44,6 @@ namespace ProjectB
 
 			// 일정 여백 띄우기
 			// TODO : 일정 여백 띄운 만큼 채우기
-			int startX = 5;
-			int startY = 3;
 
 			// 플레이어 시야 범위 = 출력 크기
 			int width = player.visionX * 2 + 1;
@@ -126,7 +128,7 @@ namespace ProjectB
 			// 현재 파티
 			// 가방
 			// 포켓기어
-			// 골드
+			// 내정보
 			// 세이브
 			// 옵션
 			// 나가기
@@ -137,20 +139,21 @@ namespace ProjectB
 			while (Game.sceneTable.Peek() == Scene.Menu)
 			{
 				int menuX = player.visionX * 2 + 6; // 맵 오른쪽 여백 두고
-				int menuY = 3;
+				int menuY = 0;
 
-				Console.SetCursorPosition(menuX, menuY + 0);  Console.WriteLine("==================");
-				Console.SetCursorPosition(menuX, menuY + 1);  Console.WriteLine("====== 메뉴 ======");
-				Console.SetCursorPosition(menuX, menuY + 2);  Console.WriteLine("==================");
-				Console.SetCursorPosition(menuX, menuY + 3);  Console.WriteLine("=                =");
-				Console.SetCursorPosition(menuX, menuY + 4);  Console.WriteLine(currentMenu == 1 ? "=   ▶ 포켓몬     =" : "=     포켓몬     =");
-				Console.SetCursorPosition(menuX, menuY + 5);  Console.WriteLine("=                =");
-				Console.SetCursorPosition(menuX, menuY + 6);  Console.WriteLine(currentMenu == 2 ? "=   ▶  가방      =" : "=      가방      =");
-				Console.SetCursorPosition(menuX, menuY + 7);  Console.WriteLine("=                =");
-				Console.SetCursorPosition(menuX, menuY + 8);  Console.WriteLine(currentMenu == 3 ? "=   ▶  골드      =" : "=      골드      =");
-				Console.SetCursorPosition(menuX, menuY + 9);  Console.WriteLine("=                =");
-				Console.SetCursorPosition(menuX, menuY + 10); Console.WriteLine(currentMenu == 4 ? "=   ▶  종료      =" : "=      종료      =");
-				Console.SetCursorPosition(menuX, menuY + 11); Console.WriteLine("==================");
+				Console.SetCursorPosition(menuX, menuY + 0); Console.WriteLine("┌────────────────┐");
+				Console.SetCursorPosition(menuX, menuY + 1); Console.WriteLine("│      메뉴      │");
+				Console.SetCursorPosition(menuX, menuY + 2); Console.WriteLine("┢─━─━─━─━─━─━─━─━┪");
+				//Console.SetCursorPosition(menuX, menuY + 3);  Console.WriteLine("┃                ┃");
+				Console.SetCursorPosition(menuX, menuY + 3); Console.WriteLine(currentMenu == 1 ? "┃   ▶ 포켓몬     ┃" : "┃     포켓몬     ┃");
+				Console.SetCursorPosition(menuX, menuY + 4); Console.WriteLine("┃                ┃");
+				Console.SetCursorPosition(menuX, menuY + 5); Console.WriteLine(currentMenu == 2 ? "┃   ▶  가방      ┃" : "┃      가방      ┃");
+				Console.SetCursorPosition(menuX, menuY + 6); Console.WriteLine("┃                ┃");
+				Console.SetCursorPosition(menuX, menuY + 7); Console.WriteLine(currentMenu == 3 ? "┃   ▶  골드      ┃" : "┃      골드      ┃");
+				Console.SetCursorPosition(menuX, menuY + 8); Console.WriteLine("┃                ┃");
+				Console.SetCursorPosition(menuX, menuY + 9); Console.WriteLine(currentMenu == 4 ? "┃   ▶  종료      ┃" : "┃      종료      ┃");
+				Console.SetCursorPosition(menuX, menuY + 10); Console.WriteLine("┖─━─━─━─━─━─━─━─━┚");
+				Console.SetCursorPosition(menuX, menuY + 11); Console.WriteLine("  Z:선택  X:취소");
 				Console.SetCursorPosition(menuX, menuY + 12);
 
 				ConsoleKey key = Console.ReadKey(true).Key;
@@ -175,8 +178,7 @@ namespace ProjectB
 						{
 							case 1:
 								// 내 파티 씬
-								Console.SetCursorPosition(0, player.visionY * 2 + 1);
-								Console.WriteLine("내파티씬으로");
+								Game.sceneTable.Push(Scene.Party);
 								break;
 
 							case 2:
@@ -187,8 +189,8 @@ namespace ProjectB
 
 							case 3:
 								Console.SetCursorPosition(0, player.visionY * 2 + 1);
-								Console.WriteLine("골드배지씬으로");
-								// 골드 배지 씬
+								Console.WriteLine("내정보씬으로");
+								// 내정보 씬
 								break;
 
 							case 4:
@@ -207,6 +209,284 @@ namespace ProjectB
 						break;
 				}
 			}
+		}
+
+		public static void PrintParty(Player player)
+		{
+			// TODO : 파티 출력
+
+			List<Pokemon> party = player.Party;
+
+			Console.Clear();
+
+			int partyIndex = 0;
+
+			while (Game.sceneTable.Peek() == Scene.Party)
+			{
+				// 플레이어가 가진 포켓몬들 전부 출력
+				for (int i = 0; i < party.Count; i++)
+				{
+					Console.SetCursorPosition(startX, startY + i); // 줄마다 위치 이동
+					PrintPokemonStatus(party[i], i == partyIndex); // 선택 표시
+				}
+				// [ ] 취소
+				Console.SetCursorPosition(startX, startY + party.Count);
+				Console.WriteLine(partyIndex == party.Count ? "[▶]  취소" : "[ ]  취소");
+				// ------------------------------
+				Console.SetCursorPosition(startX, startY + party.Count + 2);
+				Console.WriteLine("==============================");
+				// Z:선택 X:취소
+				//Console.SetCursorPosition(startX, startY + party.Count + 3);
+				//Console.WriteLine("  Z:선택   X:취소  ");
+
+				ConsoleKey partyKey = Console.ReadKey(true).Key;
+
+				switch (partyKey)
+				{
+					case ConsoleKey.UpArrow:
+					case ConsoleKey.LeftArrow:
+						// i --
+						partyIndex--;
+						if (partyIndex < 0)
+							partyIndex = party.Count;
+						break;
+
+					case ConsoleKey.DownArrow:
+					case ConsoleKey.RightArrow:
+						// i ++
+						partyIndex++;
+						if (partyIndex > party.Count)
+							partyIndex = 0;
+						break;
+
+					case ConsoleKey.Z:
+						// 선택
+						if (partyIndex == party.Count)
+						{
+							Game.sceneTable.Pop();
+							Console.Clear();
+						}
+						else
+						{
+							// 포켓몬 파티메뉴 출력
+							Game.sceneTable.Push(Scene.PartyMenu);
+							int partyMenuIndex = 1;
+							while (Game.sceneTable.Peek() == Scene.PartyMenu)
+							{
+								// [ ] 능력치
+								Console.SetCursorPosition(startX, startY + party.Count + 3);
+								Console.WriteLine(partyMenuIndex == 1 ? "[▶]  능력치    " : "[ ]  능력치    ");
+								// [ ] 순서바꾸기
+								Console.SetCursorPosition(startX, startY + party.Count + 4);
+								Console.WriteLine(partyMenuIndex == 2 ? "[▶]  순서바꾸기" : "[ ]  순서바꾸기");
+								// [ ] 기술
+								Console.SetCursorPosition(startX, startY + party.Count + 5);
+								Console.WriteLine(partyMenuIndex == 3 ? "[▶]  기술      " : "[ ]  기술      ");
+								// [ ] 취소
+								Console.SetCursorPosition(startX, startY + party.Count + 6);
+								Console.WriteLine(partyMenuIndex == 4 ? "[▶]  취소      " : "[ ]  취소      ");
+
+								ConsoleKey partyMenuKey = Console.ReadKey(true).Key;
+
+								switch (partyMenuKey)
+								{
+									case ConsoleKey.UpArrow:
+									case ConsoleKey.LeftArrow:
+										// i --
+										partyMenuIndex--;
+										if (partyMenuIndex < 1)
+											partyMenuIndex = 4;
+										break;
+
+									case ConsoleKey.DownArrow:
+									case ConsoleKey.RightArrow:
+										// i ++
+										partyMenuIndex++;
+										if (partyMenuIndex > 4)
+											partyMenuIndex = 1;
+										break;
+
+									case ConsoleKey.Z:
+										if (partyMenuIndex == 1)
+										{
+											// 포켓몬 디테일 정보
+											Pokemon pokemon = party[partyIndex];
+											Game.sceneTable.Push(Scene.PokemonDetail);
+											PrintPokemonDetail(pokemon, startX, startY + party.Count + 3);
+										}
+										else if (partyMenuIndex == 2)
+										{
+											// 교체
+											Pokemon pokemon = party[partyIndex];
+										}
+										else if (partyMenuIndex == 3)
+										{
+											// 가진 기술
+											Pokemon pokemon = party[partyIndex];
+										}
+										else
+										{
+											Game.sceneTable.Pop();
+											Console.Clear();
+										}
+										break;
+
+									case ConsoleKey.X:
+									case ConsoleKey.Escape:
+										Game.sceneTable.Pop();
+										Console.Clear();
+										break;
+								}
+							}
+						}
+						break;
+
+					case ConsoleKey.X:
+					case ConsoleKey.Escape:
+						Game.sceneTable.Pop();
+						Console.Clear();
+						break;
+				}
+			}
+		}
+
+		static void PrintPokemonStatus(Pokemon pokemon, bool isSelected = false)
+		{
+			// 가지고 있는 포켓몬 정보 출력
+
+			string marker = isSelected ? "[▶]" : "[ ]";
+			string genderSymbol = pokemon.Gender == Gender.Male ? "♂" : "♀";
+			Console.Write($"{marker} {pokemon.Name,6}\t {genderSymbol} Lv{pokemon.Level,3}   HP:{pokemon.Hp,3}/{pokemon.MaxHp,3}");
+
+			PrintHpBar(pokemon, false);
+
+			// [▶]   이상해씨      ♀ Lv  5   HP:  20/ 20 [■■■■■■■■■■]
+			// [ ]   이상해씨      ♀ Lv  5   HP:  20/ 20 [■■■■■■■■■■]
+		}
+
+		static void PrintHpBar(Pokemon pokemon, bool addLine)
+		{
+			int barSize = 10;
+			int filled = (int)(((float)pokemon.Hp / pokemon.MaxHp) * barSize);
+			int empty = barSize - filled;
+
+			Console.Write("[");
+			Console.ForegroundColor = GetHpBarColor(pokemon);
+			Console.Write(new string('■', filled));
+			Console.ForegroundColor = ConsoleColor.Gray;
+			Console.Write(new string(' ', empty));
+			Console.ResetColor();
+			Console.Write("]");
+			if (addLine) Console.WriteLine();
+		}
+
+		static ConsoleColor GetHpBarColor(Pokemon pokemon)
+		{
+			// 체력 퍼센트에 따라 체력바 색 변경
+			float hpPer = (float)pokemon.Hp / pokemon.MaxHp;
+
+			if (hpPer > 0.5f) return ConsoleColor.Green;        // 100 ~ 51
+			else if (hpPer > 0.25f) return ConsoleColor.Yellow; // 50 ~ 26
+			else return ConsoleColor.Red;                       // 25 ~ 0
+		}
+
+		static void PrintPokemonDetail(Pokemon pokemon, int startX, int startY)
+		{
+
+			ClearLine(startX, startY, 30, 6);
+
+			int pageIndex = 1;
+			
+			// 포켓몬 디테일 정보 출력
+			while (Game.sceneTable.Peek() == Scene.PokemonDetail)
+			{
+				int line = startY;
+				// 도감번호 레벨 성별
+				Console.SetCursorPosition(startX, line++);
+				Console.WriteLine($"No. {pokemon.Id,3} Lv. {pokemon.Level,3} {(pokemon.Gender == Gender.Male ? "♂" : "♀")}");
+				Console.SetCursorPosition(startX, line++);
+				Console.WriteLine("                                                    ");
+				// 이름
+				Console.SetCursorPosition(startX, line++);
+				Console.WriteLine($"{pokemon.Name}");
+				Console.SetCursorPosition(startX, line++);
+				Console.WriteLine("                                                    ");
+				// ◀ ■ □ □ ▶
+				Console.SetCursorPosition(startX, line++);
+				Console.Write("◀");
+				Console.ForegroundColor = ConsoleColor.White;
+				Console.BackgroundColor = ConsoleColor.Magenta;
+				Console.Write(pageIndex == 1 ? "■" : "□");
+				Console.BackgroundColor = ConsoleColor.Green;
+				Console.Write(pageIndex == 2 ? "■" : "□");
+				Console.BackgroundColor = ConsoleColor.Blue;
+				Console.Write(pageIndex == 3 ? "■" : "□");
+				Console.ResetColor();
+				Console.Write("▶");
+				Console.WriteLine("                                                    ");
+				Console.SetCursorPosition(startX, line++);
+				Console.WriteLine("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+				switch (pageIndex)
+				{
+					case 1:
+						// 1페이지
+						// HP 바
+						Console.SetCursorPosition(startX, line++);
+						Console.WriteLine($"HP:{pokemon.Hp,3}/{pokemon.MaxHp,3}");
+						Console.SetCursorPosition(startX, line++);
+						PrintHpBar(pokemon, true);
+						// 상태/	보통
+						Console.SetCursorPosition(startX, line++);
+						Console.WriteLine($"상태/    {pokemon.State}");
+						// 타입/	타입1
+						//			타입2
+						Console.SetCursorPosition(startX, line++);
+						Console.WriteLine($"타입/    {pokemon.PokeType1}");
+						Console.SetCursorPosition(startX, line++);
+						Console.WriteLine($"         {(pokemon.PokeType2 == PokeType.None ? "" : pokemon.PokeType2)}");
+						break;
+
+					case 2:
+						// 2페이지
+						// 기술/	기술명 pp cur/max
+						//			-		--
+						break;
+
+					case 3:
+						// 3페이지
+						// 능력치	체력/	n
+						//			공격/	n
+						//			방어/	n
+						//			특공/	n
+						//			특방/	n
+						//			스피드/	n
+						break;
+				}
+
+
+
+			}
+		}
+
+		public static void ClearLine(int x, int y, int width, int height)
+		{
+			Console.SetCursorPosition(x, y);
+			for (int i = 0; i < height; i++)
+			{
+				Console.SetCursorPosition(x, y + i);
+				Console.Write(new string(' ', width));
+			}
+			Console.SetCursorPosition(x, y);
+		}
+
+		public static void PrintInventory(Player player)
+		{
+			// TODO : 인벤토리 출력
+		}
+
+		public static void PrintMyInfo(Player player)
+		{
+			// TODO : 내정보 출력
 		}
 	}
 }

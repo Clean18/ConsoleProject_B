@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace ProjectB
 {
     // 각 씬에서 메인 화면들
-	public enum Scene { Start, Field, Menu }
+	public enum Scene { Start, Field, Menu, Party, PartyMenu, PokemonDetail, Inventory, MyInfo }
 
 	public static class Game
     {
@@ -68,17 +68,36 @@ namespace ProjectB
 		{
 			switch (sceneTable.Peek())
 			{
+				// 시작 씬
 				case Scene.Start:
 					Print.PrintStart();
 					break;
 
+				// 필드 씬
 				case Scene.Field:
-					Print.PrintAll(player!); // 하나로 통합
+					Print.PrintAll(player!);
 					break;
 
+				// 메뉴 씬
 				case Scene.Menu:
 					Print.PrintMenu(player!);
 					break;
+
+				// 파티 씬
+				case Scene.Party:
+					Print.PrintParty(player!);
+					break;
+
+				// 인벤토리 씬
+				case Scene.Inventory:
+					Print.PrintInventory(player!);
+					break;
+
+				// 내정보 씬
+				case Scene.MyInfo:
+					Print.PrintMyInfo(player!);
+					break;
+
 			}
 		}
 
