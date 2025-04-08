@@ -20,6 +20,7 @@ namespace ProjectB
 		static Player? player; // 플레이어 필드
 		public static Player Player { get { return player!; } } // 플레이어 프로퍼티, 콜하는 시점에선 null일 수가 없음 진짜임
 		static List<MoveObject> currentObjects => Map.GetMoveObjects(sceneTable.Peek()); // 현재 씬에 존재하는 무브 오브젝트 데이터
+		static char[,]? currentBuffer;
 
 		public static void Run()
         {
@@ -74,34 +75,17 @@ namespace ProjectB
 					//Print.PrintMap(player!);
 					//Print.PrintObject();
 					//Print.PrintPlayer(player!);
-					Print.PrintAll(player!);
+					currentBuffer = Print.PrintAll(player!); // 하나로 통합
 					break;
 			}
 		}
 
 		static void Update(ConsoleKey input)
 		{
-			switch (input)
-			{
-				// TODO : 이동 제한 추가하기
-				// TODO : 플레이어 이동을 Player 클래스에 줘야하나
-				// 다른키입력도 받을 거생각해야하는데
-				case ConsoleKey.UpArrow:
-					player!.position.y--;
-					break;
-
-				case ConsoleKey.DownArrow:
-					player!.position.y++;
-					break;
-
-				case ConsoleKey.LeftArrow:
-					player!.position.x--;
-					break;
-
-				case ConsoleKey.RightArrow:
-					player!.position.x++;
-					break;
-			}
+			List<string> mapData = Map.GetMapData(sceneTable.Peek());
+			player!.KeyHandler(input, currentBuffer!);
 		}
+
+		
     }
 }

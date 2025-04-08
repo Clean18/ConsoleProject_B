@@ -36,7 +36,6 @@ namespace ProjectB
 				}
 			}
 		}
-		// TODO : 맵출력을 항상 하다보니 깜빡임 해결하기 > 더블 버퍼링
 		public static void PrintMap(Player player)
 		{
 			List<string> currentMap = Map.GetMapData(Game.sceneTable.Peek());
@@ -101,7 +100,7 @@ namespace ProjectB
 		}
 
 
-		public static void PrintAll(Player player)
+		public static char[,] PrintAll(Player player)
 		{
 			// 출력할 맵, 오브젝트, 플레이어(매개변수)
 			List<string> currentMap = Map.GetMapData(Game.sceneTable.Peek());
@@ -180,6 +179,8 @@ namespace ProjectB
 				Console.WriteLine();
 			}
 			Console.ResetColor();
+
+			return buffer;
 		}
 	}
 }
