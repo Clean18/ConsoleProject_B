@@ -103,42 +103,51 @@ namespace ProjectB
 
 		public static void PrintAll(Player player)
 		{
+			// 출력할 맵, 오브젝트, 플레이어(매개변수)
 			List<string> currentMap = Map.GetMapData(Game.sceneTable.Peek());
 			List<MoveObject> currentObjects = Map.GetMoveObjects(Game.sceneTable.Peek());
 
+			// 플레이어 시야 범위 = 출력 크기
 			int width = player.visionX * 2 + 1;
 			int height = player.visionY * 2 + 1;
 
-			// 화면 버퍼 준비 (기본값은 공백)
-			char[,] buffer = new char[height, width];
-			ConsoleColor[,] fgBuffer = new ConsoleColor[height, width];
-			ConsoleColor[,] bgBuffer = new ConsoleColor[height, width];
+			// 맵 쌓고 오브젝트 쌓고 플레이어 쌓고 한번에 출력
+			char[,] buffer = new char[height, width];					// 출력할 배열
+			ConsoleColor[,] fgBuffer = new ConsoleColor[height, width]; // 폰트 색
+			ConsoleColor[,] bgBuffer = new ConsoleColor[height, width]; // 배경 색
 
-			// 맵 출력용 타일 세팅
+			Console.ResetColor();
+
+			// 출력용 맵 타일 세팅
 			for (int y = 0; y < height; y++)
 			{
 				for (int x = 0; x < width; x++)
 				{
+					// 출력할 맵의 좌표 계산
 					int mapX = player.position.x - player.visionX + x;
 					int mapY = player.position.y - player.visionY + y;
 
+					// 맵 범위 초과시
 					if ((mapX < 0) || (mapY < 0) || (mapY >= currentMap.Count) || (mapX >= currentMap[0].Length))
 					{
 						buffer[y, x] = ' ';
+						fgBuffer[y, x] = ConsoleColor.Black;
+						bgBuffer[y, x] = ConsoleColor.DarkBlue;
 					}
 					else
 					{
+						// 맵 타일 출력
 						buffer[y, x] = currentMap[mapY][mapX];
+						fgBuffer[y, x] = ConsoleColor.White;
+						bgBuffer[y, x] = ConsoleColor.Black;
 					}
-
-					fgBuffer[y, x] = ConsoleColor.White;
-					bgBuffer[y, x] = ConsoleColor.Black;
 				}
 			}
 
-			// 오브젝트 출력 위치 덮어쓰기
+			// 출력용 오브젝트 세팅
 			foreach (var obj in currentObjects)
 			{
+				// 오브젝트 위치 - 플레이어 위치로 상대좌표 구한 후 시야를 더해서 시야 내에 출력
 				int dx = obj.position.x - player.position.x + player.visionX;
 				int dy = obj.position.y - player.position.y + player.visionY;
 
@@ -150,14 +159,15 @@ namespace ProjectB
 				}
 			}
 
-			// 플레이어 출력도 덮어쓰기 (가장 우선순위 높음)
+			// 출력용 플레이어 세팅
+			// 플레이어 위치는 항상 고정
 			int px = player.visionX;
 			int py = player.visionY;
 			buffer[py, px] = player.sprite;
 			fgBuffer[py, px] = player.color;
 			bgBuffer[py, px] = player.bgColor;
 
-			// 최종 버퍼 출력
+			// 누적된 데이터 전부 출력 (맵, 무브오브젝트, 플레이어)
 			Console.SetCursorPosition(0, 0);
 			for (int y = 0; y < height; y++)
 			{
