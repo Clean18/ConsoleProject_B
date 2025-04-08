@@ -1,4 +1,5 @@
-﻿using ProjectB.Structs;
+﻿using ProjectB.Interfaces;
+using ProjectB.Structs;
 
 namespace ProjectB.Entities
 {
@@ -44,51 +45,53 @@ namespace ProjectB.Entities
 			{
 				// 우선 필드만
 				case Scene.Field:
-
+					FieldInput(key, mapData, entity);
 					break;
 
 			}
-			
-			switch (key)
-			{
-				case ConsoleKey.UpArrow:
-					Move(Direction.Up, mapData, entity);
-					break;
 
-				case ConsoleKey.DownArrow:
-					Move(Direction.Down, mapData, entity);
-					break;
+			//switch (key)
+			//{
+			//	case ConsoleKey.UpArrow:
+			//		Move(Direction.Up, mapData, entity);
+			//		break;
 
-				case ConsoleKey.LeftArrow:
-					Move(Direction.Left, mapData, entity);
-					break;
+			//	case ConsoleKey.DownArrow:
+			//		Move(Direction.Down, mapData, entity);
+			//		break;
 
-				case ConsoleKey.RightArrow:
-					Move(Direction.Right, mapData, entity);
-					break;
+			//	case ConsoleKey.LeftArrow:
+			//		Move(Direction.Left, mapData, entity);
+			//		break;
 
-				case ConsoleKey.Z:  // 선택, 예
-					Z();
-					break;
+			//	case ConsoleKey.RightArrow:
+			//		Move(Direction.Right, mapData, entity);
+			//		break;
 
-				case ConsoleKey.X:  // 취소, 아니오
-					X();
-					break;
+			//	case ConsoleKey.Z:  // 선택, 예
+			//		Z(this.direction, mapData, entity);
+			//		break;
 
-				case ConsoleKey.Escape: // esc 메뉴
-					ESC();
-					break;
-			}
+			//	case ConsoleKey.X:  // 취소, 아니오
+			//		X(this.direction, mapData, entity);
+			//		break;
+
+			//	case ConsoleKey.Escape: // esc 메뉴
+			//		ESC();
+			//		break;
+			//}
 		}
 
 		void FieldInput(ConsoleKey key, List<string> mapData, List<Entity> entity)
 		{
 			switch (key)
 			{
+				// 이동
 				case ConsoleKey.UpArrow: Move(Direction.Up, mapData, entity); break;
 				case ConsoleKey.DownArrow: Move(Direction.Down, mapData, entity); break;
 				case ConsoleKey.LeftArrow: Move(Direction.Left, mapData, entity); break;
 				case ConsoleKey.RightArrow: Move(Direction.Right, mapData, entity); break;
+				// 상호작용
 				case ConsoleKey.Z: Z(this.direction, mapData, entity); break;
 			}
 		}
@@ -126,6 +129,22 @@ namespace ProjectB.Entities
 		void Z(Direction direction, List<string> mapData, List<Entity> entity)
 		{
 			// TODO : Z 키 인풋
+			this.direction = direction;
+			Position nextPos = position + direction;
+
+			// 맵 초과 제한
+			if ((nextPos.x < 0) || (nextPos.x >= mapData[position.y].Length) || (nextPos.y < 0) || (nextPos.y >= mapData.Count))
+				return;
+
+			foreach (var obj in entity)
+			{
+				// 이동할 위치에 오브젝트가 있으면 상호작용
+				if (obj.position == nextPos && obj is IInteract interactable)
+				{
+					interactable.Interact(this);
+					return;
+				}
+			}
 
 			// 필드일때
 			// 배틀중일떄
@@ -181,11 +200,16 @@ namespace ProjectB.Entities
 					if (hasItem.CurCount > hasItem.MaxCount)
 						hasItem.CurCount = hasItem.MaxCount;
 
+					Console.SetCursorPosition(0, this.vision * 2 + 1);
+					Console.WriteLine($"{item.Name} 을/를 {item.CurCount} 개 얻었습니다. ({hasItem.CurCount}개)");
+
 					return;
 				}
 			}
 
 			// 없으면 새로 추가
+			Console.SetCursorPosition(0, this.vision * 2 + 1);
+			Console.WriteLine($"{item.Name} 을/를 {item.CurCount} 개 얻었습니다.");
 			inven.Add(item);
 		}
 	}
