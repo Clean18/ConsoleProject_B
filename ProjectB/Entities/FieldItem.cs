@@ -19,6 +19,10 @@ namespace ProjectB.Entities
 		public void Interact(Player player)
 		{
 			player.AddItem(Item);
+
+			// 필드에서 아이템 삭제
+			List<Entity> entityList = Data.GetEntitiesData(Game.sceneTable.Peek());
+			entityList.Remove(this); // self 제거
 		}
 	}
 }

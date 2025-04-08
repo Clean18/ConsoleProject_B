@@ -193,7 +193,7 @@ namespace ProjectB.Entities
 			{
 				if (hasItem.Name == item.Name)
 				{
-					hasItem.CurCount += item.CurCount;
+					hasItem.CurCount = hasItem.CurCount + item.CurCount;
 
 					// 최대 수량만큼만
 					// 바닥에 아이템 사라짐

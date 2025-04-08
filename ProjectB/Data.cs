@@ -62,8 +62,9 @@ namespace ProjectB
 				[Scene.Field] = new List<Entity>
 				{
 					new MoveObject('O', new Position(3, 3), new Position(3, 7), Direction.Down, color: ConsoleColor.Red),
-					new FieldItem('B', new Position(2, 2), Direction.Down, itemData!["몬스터볼"], color: ConsoleColor.Red),
-					new FieldItem('B', new Position(2, 3), Direction.Down, itemData!["몬스터볼"], color: ConsoleColor.Red),
+					new FieldItem('B', new Position(2, 2), Direction.Down, new PokeBall(5), color: ConsoleColor.Red),
+					new FieldItem('B', new Position(2, 3), Direction.Down, new PokeBall(3), color: ConsoleColor.Red),
+					new FieldItem('B', new Position(2, 4), Direction.Down, new PokeBall(2), color: ConsoleColor.Red),
 
 				},
 			};
