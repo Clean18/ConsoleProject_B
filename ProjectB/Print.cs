@@ -125,13 +125,9 @@ namespace ProjectB
 		{
 			// TODO : 메뉴 리스트 / 씬추가해야됨
 			// 도감
-			// 현재 파티
-			// 가방
 			// 포켓기어
-			// 내정보
 			// 세이브
 			// 옵션
-			// 나가기
 			// 종료
 
 
@@ -214,7 +210,6 @@ namespace ProjectB
 		public static void PrintParty(Player player)
 		{
 			// TODO : 파티 출력
-
 			List<Pokemon> party = player.Party;
 
 			Console.Clear();
@@ -227,7 +222,7 @@ namespace ProjectB
 				for (int i = 0; i < party.Count; i++)
 				{
 					Console.SetCursorPosition(startX, startY + i); // 줄마다 위치 이동
-					PrintPokemonStatus(party[i], i == partyIndex); // 선택 표시
+					PrintPokemonStatus(party[i], i == partyIndex); // 포켓몬 스탯 출력(선택 표시)
 				}
 				// [ ] 취소
 				Console.SetCursorPosition(startX, startY + party.Count);
@@ -402,33 +397,34 @@ namespace ProjectB
 			{
 				int line = startY;
 				// 도감번호 레벨 성별
-				Console.SetCursorPosition(startX, line++);
+				Console.SetCursorPosition(startX, line++); //1
 				Console.WriteLine($"No. {pokemon.Id,3} Lv. {pokemon.Level,3} {(pokemon.Gender == Gender.Male ? "♂" : "♀")}");
-				Console.SetCursorPosition(startX, line++);
+				Console.SetCursorPosition(startX, line++); //2
 				Console.WriteLine("                                                    ");
 				// 이름
-				Console.SetCursorPosition(startX, line++);
+				Console.SetCursorPosition(startX, line++); //3
 				Console.WriteLine($"{pokemon.Name}");
-				Console.SetCursorPosition(startX, line++);
+				Console.SetCursorPosition(startX, line++); //4
 				Console.WriteLine("                                                    ");
 				// ◀ ■ □ □ ▶
-				Console.SetCursorPosition(startX, line++);
-				Console.Write("◀");
+				Console.SetCursorPosition(startX, line++); //5
+				Console.Write("◀ ");
 				Console.ForegroundColor = ConsoleColor.White;
 				Console.BackgroundColor = ConsoleColor.Magenta;
-				Console.Write(pageIndex == 1 ? "■" : "□");
+				Console.Write(pageIndex == 1 ? " ■ " : " □ ");
 				Console.BackgroundColor = ConsoleColor.Green;
-				Console.Write(pageIndex == 2 ? "■" : "□");
+				Console.Write(pageIndex == 2 ? " ■ " : " □ ");
 				Console.BackgroundColor = ConsoleColor.Blue;
-				Console.Write(pageIndex == 3 ? "■" : "□");
+				Console.Write(pageIndex == 3 ? " ■ " : " □ ");
 				Console.ResetColor();
-				Console.Write("▶");
+				Console.Write(" ▶");
 				Console.WriteLine("                                                    ");
-				Console.SetCursorPosition(startX, line++);
-				Console.WriteLine("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+				Console.SetCursorPosition(startX, line++); //7
+				Console.WriteLine("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
 				switch (pageIndex)
 				{
 					case 1:
+						ClearLine(startX, line, 30, 8);
 						// 1페이지
 						// HP 바
 						Console.SetCursorPosition(startX, line++);
@@ -447,12 +443,33 @@ namespace ProjectB
 						break;
 
 					case 2:
+						ClearLine(startX, line, 30, 8);
 						// 2페이지
 						// 기술/	기술명 pp cur/max
-						//			-		--
+						Console.SetCursorPosition(startX, line++);
+						Console.WriteLine($"사용할 수 있는 기술");
+						Console.SetCursorPosition(startX, line++);
+						Console.WriteLine($"기술명/             PP");
+						for (int i = 0; i < 4; i++)
+						{
+							Console.SetCursorPosition(startX, line++);
+
+							if (i < pokemon.Skills!.Count && pokemon.Skills != null && pokemon.Skills[i] != null)
+							{
+								// 기술명	25/25
+								Skill skill = pokemon.Skills[i];
+								Console.WriteLine($"{skill.Name,-12}\t{skill.CurPP,2}/{skill.MaxPP,2}");
+							}
+							else
+							{
+								// -		--
+								Console.WriteLine($"{"-",-12}\t{"--",2}/{"--",2}");
+							}
+						}
 						break;
 
 					case 3:
+						ClearLine(startX, line, 30, 8);
 						// 3페이지
 						// 능력치	체력/	n
 						//			공격/	n
@@ -460,10 +477,43 @@ namespace ProjectB
 						//			특공/	n
 						//			특방/	n
 						//			스피드/	n
+						var stats = pokemon.PokemonStat;
+						Console.SetCursorPosition(startX, line++);
+						Console.WriteLine("능력치");
+						Console.SetCursorPosition(startX, line++);
+						Console.WriteLine($"체력/\t{stats.hp,3}");
+						Console.SetCursorPosition(startX, line++);
+						Console.WriteLine($"공격/\t{stats.attack,3}");
+						Console.SetCursorPosition(startX, line++);
+						Console.WriteLine($"방어/\t{stats.defense,3}");
+						Console.SetCursorPosition(startX, line++);
+						Console.WriteLine($"특수공격/\t{stats.speAttack,3}");
+						Console.SetCursorPosition(startX, line++);
+						Console.WriteLine($"특수방어/\t{stats.speDefense,3}");
+						Console.SetCursorPosition(startX, line++);
+						Console.WriteLine($"스피드/\t{stats.speed,3}");
 						break;
 				}
 
+				ConsoleKey key = Console.ReadKey(true).Key;
 
+				switch(key)
+				{
+					// pageIndex 1~3
+					case ConsoleKey.UpArrow:
+					case ConsoleKey.LeftArrow:
+						pageIndex--;
+						if (pageIndex < 1)
+							pageIndex = 3;
+						break;
+
+					case ConsoleKey.DownArrow:
+					case ConsoleKey.RightArrow:
+						pageIndex++;
+						if (pageIndex > 3)
+							pageIndex = 1;
+						break;
+				}
 
 			}
 		}

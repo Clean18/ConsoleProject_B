@@ -135,7 +135,7 @@ namespace ProjectB
 		}
 
 		// 기술 4개 보관
-		public Skill[]? Skills { get; set; }
+		public List<Skill> Skills { get; set; } = new List<Skill>(4);
 		public abstract void UseSkill(Pokemon attacker, Skill skill, Pokemon defender);
 
 

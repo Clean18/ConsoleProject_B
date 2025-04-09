@@ -20,10 +20,10 @@ namespace ProjectB.Pokemons
 				type2: PokeType.Poison
 			)
 		{
-			Skills = new Skill[]
+			Skills = new List<Skill>()
 			{
-			new Skill("몸통박치기", PokeType.Normal, SkillType.Physical, 40, 100, 35, 35),
-			new Skill("덩굴채찍", PokeType.Grass, SkillType.Special, 45, 100, 25, 25)
+				new Skill("몸통박치기", PokeType.Normal, SkillType.Physical, 40, 100, 35, 35),
+				new Skill("덩굴채찍", PokeType.Grass, SkillType.Special, 45, 100, 25, 25),
 			};
 		}
 

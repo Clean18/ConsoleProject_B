@@ -26,10 +26,10 @@ namespace ProjectB.Pokemons
 				type2: PokeType.None
 			)
 		{
-			Skills = new Skill[]
+			Skills = new List<Skill>()
 			{
-			new Skill("몸통박치기", PokeType.Normal, SkillType.Physical, 40, 100, 35, 35),
-			new Skill("물대포", PokeType.Water, SkillType.Special, 40, 100, 25, 25)
+				new Skill("몸통박치기", PokeType.Normal, SkillType.Physical, 40, 100, 35, 35),
+				new Skill("물대포", PokeType.Water, SkillType.Special, 40, 100, 25, 25),
 			};
 		}
 
