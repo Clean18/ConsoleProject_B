@@ -59,10 +59,6 @@ namespace ProjectB
 		{
 			// 상대 푸키먼이 가진 기술의 타입이
 			// 내 푸키먼의 타입의 상성이면
-			// 4배 1순위
-			// 2배 2순위
-			// 1배 3순위
-			// else 랜덤
 			Pokemon? enemyFirst = isTrainer ? enemyParty![0] : enemyPokemon;
 			Pokemon? myFirst = Game.Player.MyFirstPoke();
 
@@ -103,11 +99,6 @@ namespace ProjectB
 			// 내턴
 			strongSkill.CurPP--;
 			// 체력 0되면 죽고 PokemonChange 로 state 변경
-			//Console.SetCursorPosition(1, 13);
-			//Console.WriteLine($"적의 {enemyFirst.Name}의 {strongSkill.Name}~!");
-			//Thread.Sleep(2000);
-			//Console.SetCursorPosition(1, 13);
-			//Print.ClearLine(0, 1, 80, 1);
 			string battleText = $"적의 {enemyFirst.Name}의 {strongSkill.Name}~!";
 			Print.PrintBattleText(battleText, 2, 1);
 			myFirst.TakeDamage(enemyFirst, realDamage);

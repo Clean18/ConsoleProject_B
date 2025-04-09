@@ -870,8 +870,8 @@ namespace ProjectB
 			switch (Battle.state)
 			{
 				case BattleState.Intro:
-					//Battle.state = BattleState.PlayerTurn;
-					Battle.state = BattleState.EnemyTurn;
+					Battle.state = BattleState.PlayerTurn;
+					//Battle.state = BattleState.EnemyTurn;
 					//Battle.state = BattleState.SpeedCheck;
 					break;
 				case BattleState.SpeedCheck:
@@ -889,6 +889,7 @@ namespace ProjectB
 
 				case BattleState.PlayerSkill:
 					// 보유 기술 출력
+					PrintPlayerBattle();
 					break;
 
 				case BattleState.PlayerInventory:
@@ -994,6 +995,71 @@ namespace ProjectB
 			Thread.Sleep(wait * 1000);
 			Console.SetCursorPosition(1, y);
 			Print.ClearLine(0, line, 100, line);
+		}
+
+		static void PrintPlayerBattle()
+		{
+			int skillIndex = 0;
+			Pokemon pokemon = Battle.myPokemon!;
+
+			// 기술 null 예외처리
+			string[] skillNames = new string[4];
+			for (int i = 0; i < 4; i++)
+			{
+				var skill = pokemon.Skills.Count > i? pokemon.Skills[i] : null;
+				skillNames[i] = skill == null ? "    --    " : skill.Name!;
+			}
+
+			while (Battle.state == BattleState.PlayerSkill)
+			{
+				Console.SetCursorPosition(1, battleStartY + 1);
+				Console.WriteLine($" [{(skillIndex == 0 ? "▶" : " ")}] {skillNames[0],-5}  [{(skillIndex == 1 ? "▶" : " ")}] {skillNames[1],-5}");
+				Console.SetCursorPosition(1, battleStartY + 2);
+				Console.WriteLine($" [{(skillIndex == 2 ? "▶" : " ")}] {skillNames[2],-5}  [{(skillIndex == 3 ? "▶" : " ")}] {skillNames[3],-5}");
+
+				ConsoleKey key = Console.ReadKey(true).Key;
+
+				switch (key)
+				{
+					case ConsoleKey.UpArrow:
+						switch (skillIndex)
+						{
+							case 2: skillIndex = 0; break;
+							case 3: skillIndex = 1; break;
+						}
+						break;
+
+					case ConsoleKey.DownArrow:
+						switch (skillIndex)
+						{
+							case 0: skillIndex = 2; break;
+							case 1: skillIndex = 3; break;
+						}
+						break;
+
+					case ConsoleKey.LeftArrow:
+						switch (skillIndex)
+						{
+							case 1: skillIndex = 0; break;
+							case 3: skillIndex = 2; break;
+						}
+						break;
+
+					case ConsoleKey.RightArrow:
+						switch (skillIndex)
+						{
+							case 0: skillIndex = 1; break;
+							case 2: skillIndex = 3; break;
+						}
+						break;
+
+					case ConsoleKey.X:
+						// 다시 메뉴로
+						Battle.state = BattleState.PlayerTurn;
+						ClearLine(1, battleStartY + 1, 100, 5);
+						break;
+				}
+			}
 		}
 	}
 }
