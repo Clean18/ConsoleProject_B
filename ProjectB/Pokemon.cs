@@ -138,6 +138,12 @@ namespace ProjectB
 		public List<Skill> Skills { get; set; } = new List<Skill>(4);
 		public abstract void UseSkill(Pokemon attacker, Skill skill, Pokemon defender);
 
-
+		public void SkillChange(int from, int to)
+		{
+			// 기수ㅡㄹ 위치 교체
+			var temp = Skills[from];
+			this.Skills[from] = Skills[to];
+			this.Skills[to] = temp;
+		}
 	}
 }

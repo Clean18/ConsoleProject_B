@@ -1,5 +1,4 @@
 ﻿using ProjectB.Entities;
-using System.IO;
 
 namespace ProjectB
 {
@@ -313,11 +312,13 @@ namespace ProjectB
 										{
 											// 교체
 											Pokemon pokemon = party[partyIndex];
+											Game.sceneTable.Push(Scene.PokemonHasSkill);
 										}
 										else if (partyMenuIndex == 3)
 										{
 											// 가진 기술
-											Pokemon pokemon = party[partyIndex];
+											Game.sceneTable.Push(Scene.PokemonHasSkill);
+											PrintPokemonHasSkill(partyIndex, startX, startY + party.Count + 3);
 										}
 										else
 										{
@@ -348,10 +349,9 @@ namespace ProjectB
 		static void PrintPokemonStatus(Pokemon pokemon, bool isSelected = false)
 		{
 			// 가지고 있는 포켓몬 정보 출력
-
 			string marker = isSelected ? "[▶]" : "[ ]";
 			string genderSymbol = pokemon.Gender == Gender.Male ? "♂" : "♀";
-			Console.Write($"{marker} {pokemon.Name,6}\t {genderSymbol} Lv{pokemon.Level,3}   HP:{pokemon.Hp,3}/{pokemon.MaxHp,3}");
+			Console.Write($"{marker} {pokemon.Name,-6}\t{genderSymbol} Lv{pokemon.Level,3}   HP:{pokemon.Hp,3}/{pokemon.MaxHp,3}");
 
 			PrintHpBar(pokemon, false);
 
@@ -391,7 +391,7 @@ namespace ProjectB
 			ClearLine(startX, startY, 30, 6);
 
 			int pageIndex = 1;
-			
+
 			// 포켓몬 디테일 정보 출력
 			while (Game.sceneTable.Peek() == Scene.PokemonDetail)
 			{
@@ -471,33 +471,28 @@ namespace ProjectB
 					case 3:
 						ClearLine(startX, line, 30, 8);
 						// 3페이지
-						// 능력치	체력/	n
-						//			공격/	n
-						//			방어/	n
-						//			특공/	n
-						//			특방/	n
-						//			스피드/	n
+						// 능력치
 						var stats = pokemon.PokemonStat;
 						Console.SetCursorPosition(startX, line++);
 						Console.WriteLine("능력치");
 						Console.SetCursorPosition(startX, line++);
-						Console.WriteLine($"체력/\t{stats.hp,3}");
+						Console.WriteLine($"체력/\t{stats.hp,3}");                //			공격/	n
 						Console.SetCursorPosition(startX, line++);
 						Console.WriteLine($"공격/\t{stats.attack,3}");
 						Console.SetCursorPosition(startX, line++);
-						Console.WriteLine($"방어/\t{stats.defense,3}");
+						Console.WriteLine($"방어/\t{stats.defense,3}");           //			방어/	n
 						Console.SetCursorPosition(startX, line++);
-						Console.WriteLine($"특수공격/\t{stats.speAttack,3}");
+						Console.WriteLine($"특수공격/\t{stats.speAttack,3}");     //			특공/	n
 						Console.SetCursorPosition(startX, line++);
-						Console.WriteLine($"특수방어/\t{stats.speDefense,3}");
+						Console.WriteLine($"특수방어/\t{stats.speDefense,3}");    //			특방/	n
 						Console.SetCursorPosition(startX, line++);
-						Console.WriteLine($"스피드/\t{stats.speed,3}");
+						Console.WriteLine($"스피드/\t{stats.speed,3}");           //			스피드/	n
 						break;
 				}
 
 				ConsoleKey key = Console.ReadKey(true).Key;
 
-				switch(key)
+				switch (key)
 				{
 					// pageIndex 1~3
 					case ConsoleKey.UpArrow:
@@ -513,8 +508,12 @@ namespace ProjectB
 						if (pageIndex > 3)
 							pageIndex = 1;
 						break;
+					case ConsoleKey.X:
+					case ConsoleKey.Escape:
+						Game.sceneTable.Pop();
+						ClearLine(startX, startY, 30, 14); // ==== 줄 밑으로 전부 지우기
+						break;
 				}
-
 			}
 		}
 
@@ -527,6 +526,200 @@ namespace ProjectB
 				Console.Write(new string(' ', width));
 			}
 			Console.SetCursorPosition(x, y);
+		}
+
+		static void PrintPokemonHasSkill(int partyIndex, int startX, int startY)
+		{
+			ClearLine(startX, startY, 30, 6);
+			var pokemon = Game.Player.Party[partyIndex];
+			int skillIndex = 0;
+
+			// 포켓몬이 가진 스킬 정보 출력
+			while (Game.sceneTable.Peek() == Scene.PokemonHasSkill)
+			{
+				int line = startY;
+				Console.SetCursorPosition(startX, line++); //1
+				Console.WriteLine($"{pokemon.Name} :Lv {pokemon.Level}");
+				Console.SetCursorPosition(startX, line++); //2
+				Console.WriteLine();
+				for (int i = 0; i < 4; i++)
+				{
+					Console.SetCursorPosition(startX, line++); //6
+
+					if (i < pokemon.Skills!.Count && pokemon.Skills != null && pokemon.Skills[i] != null)
+					{
+						// 기술명	25/25
+						Skill skill = pokemon.Skills[i];
+						Console.WriteLine($"{(i == skillIndex ? "[▶]" : "[ ]")} {skill.Name,-6}\t{skill.CurPP,2}/{skill.MaxPP,2}");
+					}
+					else
+					{
+						// -		--
+						Console.WriteLine($"    {"-",-6}\t{"--",2}/{"--",2}");
+					}
+				}
+				Console.SetCursorPosition(startX, line++);
+				Console.WriteLine("━━━━━━━━━━━━━━━━━━━━━━━");
+				ConsoleKey key = Console.ReadKey(true).Key;
+
+				switch (key)
+				{
+					case ConsoleKey.UpArrow:
+					case ConsoleKey.LeftArrow:
+						skillIndex--;
+						if (skillIndex < 0)
+							skillIndex = pokemon.Skills!.Count - 1;
+						break;
+
+					case ConsoleKey.DownArrow:
+					case ConsoleKey.RightArrow:
+						skillIndex++;
+						if (skillIndex >= pokemon.Skills!.Count)
+							skillIndex = 0;
+						break;
+
+					case ConsoleKey.Z:
+						// Z 누르면 스킬 설명
+						// 타입/ 노말 물리 or 특수
+						// 위력/ 123
+						// 스킬 설명
+						Game.sceneTable.Push(Scene.PokemonSkillInfo);
+						PrintPokemonSkillInfo(partyIndex, skillIndex, startX, line);
+						ClearLine(startX, startY, 30, 14);
+						break;
+
+					case ConsoleKey.X:
+					case ConsoleKey.Escape:
+						Game.sceneTable.Pop();
+						ClearLine(startX, startY, 30, 14); // ==== 줄 밑으로 전부 지우기
+						break;
+				}
+			}
+		}
+
+		static void PrintPokemonSkillInfo(int partyIndex, int skillIndex, int startX, int startY)
+		{
+			var pokemon = Game.Player.Party[partyIndex];
+			int changeIndex = -1; // 0번스킬
+			bool isChange = false;
+			int changeY = startY - 5 + changeIndex; // 0번스킬 위치
+
+			while (Game.sceneTable.Peek() == Scene.PokemonSkillInfo)
+			{
+				var curSkill = isChange == false ? pokemon.Skills![skillIndex] : pokemon.Skills?[changeIndex];
+				int line = startY;
+
+				if (!isChange)
+					changeIndex = -1;
+
+				Console.SetCursorPosition(startX, line++);
+				Console.WriteLine($"타입/ {curSkill!.PokeType} / {(curSkill.SkillType == SkillType.Physical ? "물리" : "특수")}");
+				Console.SetCursorPosition(startX, line++);
+				Console.WriteLine($"위력/ {curSkill.Damage}");
+				Console.SetCursorPosition(startX, line++);
+				Console.WriteLine($"{curSkill.Description}");
+				Console.SetCursorPosition(startX, line++);
+				Console.SetCursorPosition(startX, line++);
+				Console.WriteLine($"{(isChange == false ? "Z : 바꾸기 X:나가기" : "바꾸시겠습니까?")}"); // isChange 에 따라 설명변경
+				Console.SetCursorPosition(startX, line++);
+				Console.WriteLine("━━━━━━━━━━━━━━━━━━━━━━━");
+				ConsoleKey skillInfoKey = Console.ReadKey(true).Key;
+
+				switch (skillInfoKey)
+				{
+					case ConsoleKey.UpArrow:
+					case ConsoleKey.LeftArrow:
+						if (isChange)
+						{
+							ClearLine(startX, startY, 100, 7);
+							Console.SetCursorPosition(startX, changeY);
+							Console.Write("[ ]");
+
+							changeIndex--;
+
+							if (changeIndex < 0)
+								changeIndex = pokemon.Skills!.Count - 1;
+
+							if (changeIndex == skillIndex) // 선택된 기술 넘기기
+							{
+								changeIndex--;
+								if (changeIndex < 0)
+									changeIndex = pokemon.Skills!.Count - 1;
+							}
+
+							changeY = startY - 5 + changeIndex;
+							Console.SetCursorPosition(startX, changeY);
+							Console.Write("[▷]");
+						}
+						break;
+
+					case ConsoleKey.DownArrow:
+					case ConsoleKey.RightArrow:
+						if (isChange)
+						{
+							ClearLine(startX, startY, 100, 7);
+							Console.SetCursorPosition(startX, changeY);
+							Console.Write("[ ]");
+
+							changeIndex++;
+
+							if (changeIndex >= pokemon.Skills!.Count)
+								changeIndex = 0;
+
+							if (changeIndex == skillIndex)
+							{
+								changeIndex++;
+								if (changeIndex >= pokemon.Skills.Count)
+									changeIndex = 0;
+							}
+
+							changeY = startY - 5 + changeIndex;
+							Console.SetCursorPosition(startX, changeY);
+							Console.Write("[▷]");
+						}
+						break;
+
+					case ConsoleKey.Z:
+						// 기술 위치 바꾸기
+						if (isChange)
+						{
+							// changeIndex를 skillIndex로
+							Game.Player.Party[partyIndex].SkillChange(changeIndex, skillIndex);
+							ClearLine(startX, startY, 100, 7);
+							Game.sceneTable.Pop();
+						}
+						if (!isChange)
+						{
+							if (pokemon.Skills!.Count > 1)
+							{
+								isChange = true;
+								ClearLine(startX, startY, 100, 7);
+								for (int i = 0; i < pokemon.Skills.Count; i++)
+								{
+									if (i != skillIndex)
+									{
+										changeIndex = i;
+										break;
+									}
+								}
+								changeY = startY - 5 + changeIndex;
+								Console.SetCursorPosition(startX, changeY);
+								Console.Write("[▷]");
+							}
+							else if (pokemon.Skills.Count <= 1)
+							{
+								Console.SetCursorPosition(startX, line++);
+								Console.WriteLine("교체할 기술이 없습니다.");
+							}
+						}
+						break;
+
+					case ConsoleKey.X:
+						Game.sceneTable.Pop();
+						ClearLine(startX, startY, 100, 7);
+						break;
+				}
+			}
 		}
 
 		public static void PrintInventory(Player player)

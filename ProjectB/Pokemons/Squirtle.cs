@@ -1,4 +1,5 @@
-﻿using ProjectB.Structs;
+﻿using ProjectB.Skills;
+using ProjectB.Structs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,8 +29,8 @@ namespace ProjectB.Pokemons
 		{
 			Skills = new List<Skill>()
 			{
-				new Skill("몸통박치기", PokeType.Normal, SkillType.Physical, 40, 100, 35, 35),
-				new Skill("물대포", PokeType.Water, SkillType.Special, 40, 100, 25, 25),
+				new Tackle(),
+				new WaterGun(),
 			};
 		}
 

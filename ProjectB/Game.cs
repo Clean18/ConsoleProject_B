@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace ProjectB
 {
     // 각 씬에서 메인 화면들
-	public enum Scene { Start, Field, Menu, Party, PartyMenu, PokemonDetail, Inventory, MyInfo }
+	public enum Scene { Start, Field, Menu, Party, PartyMenu, PokemonDetail,PokemonHasSkill, PokemonSkillInfo, Inventory, MyInfo }
 
 	public static class Game
     {
