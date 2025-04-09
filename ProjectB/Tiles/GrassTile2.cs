@@ -1,4 +1,5 @@
 ﻿using ProjectB.Entities;
+using ProjectB.Interfaces;
 using ProjectB.Structs;
 using System;
 using System.Collections.Generic;
@@ -8,20 +9,28 @@ using System.Threading.Tasks;
 
 namespace ProjectB.Tiles
 {
-	class GrassTile2 : Tile
+	class GrassTile2 : Tile, IWildEncounter
 	{
-		public GrassTile2(Position position, ConsoleColor bgColor = ConsoleColor.Black)
+		public int EncounterRate { get; private set; }
+		public int MinLevel { get; private set; }
+		public int MaxLevel { get; private set; }
+
+		public GrassTile2(Position position, int rate = 0, int minLevel = 1, int maxLevel = 5, ConsoleColor bgColor = ConsoleColor.Black)
 			: base('W', position, ConsoleColor.DarkGreen, bgColor)
 		{
+			EncounterRate = rate;
+			MinLevel = minLevel;
+			MaxLevel = maxLevel;
 		}
 
-		public override bool IsTrigger(Player player)
+
+		public bool IsTrigger(Player player)
 		{
 			// 위치가 같으면
 			return player.position == this.position;
 		}
 
-		public override void OnTrigger(Player player)
+		public void OnTrigger(Player player)
 		{
 			// 푸키먼 배틀
 		}

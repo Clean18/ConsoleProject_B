@@ -1,29 +1,42 @@
 ﻿using ProjectB.Entities;
+using ProjectB.Interfaces;
 using ProjectB.Structs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ProjectB.Tiles
 {
-	class GrassTile1 : Tile
+	class GrassTile1 : Tile, IWildEncounter
 	{
-		public GrassTile1(Position position, ConsoleColor bgColor = ConsoleColor.Black)
+		public int EncounterRate { get; private set; }
+		public int MinLevel { get; private set; }
+		public int MaxLevel { get; private set; }
+
+		// 푸키먼들도 가지고 있어야함
+
+		public GrassTile1(Position position, int rate = 0, int minLevel = 1, int maxLevel = 5, ConsoleColor bgColor = ConsoleColor.Black)
 			: base('w', position, ConsoleColor.Green, bgColor)
 		{
+			EncounterRate = rate;
+			MinLevel = minLevel;
+			MaxLevel = maxLevel;
 		}
 
-		public override bool IsTrigger(Player player)
+		public bool IsTrigger(Player player)
 		{
 			// 위치가 같으면
 			return player.position == this.position;
 		}
 
-		public override void OnTrigger(Player player)
+		public void OnTrigger(Player player)
 		{
 			// 푸키먼 배틀
+			if (IsTrigger(player))
+			{
+				int ran = Game.globalRandom.Next(100);
+				if (ran < EncounterRate)
+				{
+					// 배틀
+				}
+			}
 		}
 	}
 }

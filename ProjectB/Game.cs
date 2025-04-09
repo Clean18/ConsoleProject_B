@@ -15,10 +15,12 @@ namespace ProjectB
 		Field,	// 플레이어를 조작가능한 필드
 		Menu,	// 메뉴
 		Party,	// 메뉴 > 가지고 있는 푸키먼들
-		PartyMenu,	// 메뉴 > 파티 아래에 출력하는 옵션들 능력치, 순서바꾸기, 기술, 취소
+		PartyMenu,	// 메뉴 > 파티 아래에 출력하는 옵션들 / 능력치, 순서바꾸기, 기술, 취소
 		PokemonDetail,	// 능력치
 		PokemonHasSkill,	// 능력치 > 기술
 		PokemonSkillInfo,	// 기술
+		BattleIntro,	// 배틀 진입시
+		Battle,	// 배틀 중일 떄 / 싸우다, 가방, 포켓몬, 도망가기
 		Inventory,
 		MyInfo
 	}

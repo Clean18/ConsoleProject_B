@@ -25,9 +25,5 @@ namespace ProjectB
 			this.color = color;
 			this.bgColor = bgColor;
 		}
-
-		// 트리거 함수
-		public virtual bool IsTrigger(Player player) => false;
-		public virtual void OnTrigger(Player player) { }
 	}
 }

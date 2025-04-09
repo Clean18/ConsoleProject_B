@@ -8,6 +8,11 @@ namespace ProjectB
 {
 	public static class Data
 	{
+		enum Map
+		{
+			Field
+		}
+
 		private static Dictionary<Scene, List<string>>? mapData;
 		private static Dictionary<Scene, List<Entity>>? mapEntityData;
 		private static Dictionary<string, Item>? itemData;
