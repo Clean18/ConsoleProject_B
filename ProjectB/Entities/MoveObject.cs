@@ -70,7 +70,7 @@ namespace ProjectB.Entities
 		{
 			this.direction = dir;
 			Position nextPos = this.position + dir;
-			List<string> mapData = Data.GetMapData(Game.sceneTable.Peek());
+			List<string> mapData = Data.GetMapData(Game.currentMap);
 
 			if ((nextPos.x < 0) || (nextPos.x >= mapData[position.y].Length) || (nextPos.y < 0) || (nextPos.y >= mapData.Count))
 				return;

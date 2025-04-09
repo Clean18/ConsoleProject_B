@@ -21,7 +21,7 @@ namespace ProjectB.Entities
 			player.AddItem(Item);
 
 			// 필드에서 아이템 삭제
-			List<Entity> entityList = Data.GetEntitiesData(Game.sceneTable.Peek());
+			List<Entity> entityList = Data.GetEntitiesData(Game.currentMap);
 			entityList.Remove(this); // self 제거
 		}
 	}

@@ -26,6 +26,7 @@ namespace ProjectB
 				{
 					case ConsoleKey.D1:
 						Game.sceneTable.Push(Scene.Field);
+						Game.currentMap = Data.Map.Field;
 						Console.Clear();
 						return;
 
@@ -39,10 +40,9 @@ namespace ProjectB
 		public static void PrintAll(Player player)
 		{
 			// 출력할 맵, 오브젝트, 플레이어(매개변수)
-			Scene curScene = Game.sceneTable.Peek();
-			List<string> currentMap = Data.GetMapData(curScene);
-			List<Entity> currentObjects = Data.GetEntitiesData(curScene);
-			List<Tile> currentTiles = Data.GetTiles(curScene);
+			List<string> currentMap = Data.GetMapData(Game.currentMap);
+			List<Entity> currentObjects = Data.GetEntitiesData(Game.currentMap);
+			List<Tile> currentTiles = Data.GetTiles(Game.currentMap);
 
 			// 일정 여백 띄우기
 			// TODO : 일정 여백 띄운 만큼 채우기

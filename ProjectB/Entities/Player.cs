@@ -46,9 +46,8 @@ namespace ProjectB.Entities
 			{
 				// 우선 필드만
 				case Scene.Field:
-					Scene currentScene = Game.sceneTable.Peek();
-					List<string> mapData = Data.GetMapData(currentScene);
-					List<Entity> entityData = Data.GetEntitiesData(currentScene);
+					List<string> mapData = Data.GetMapData(Game.currentMap);
+					List<Entity> entityData = Data.GetEntitiesData(Game.currentMap);
 					FieldInput(key, mapData, entityData);
 					break;
 			}

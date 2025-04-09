@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static ProjectB.Data;
 
 namespace ProjectB.Entities
 {
@@ -21,7 +22,7 @@ namespace ProjectB.Entities
 			player.AddPokemon(Pokemon);
 
 			// 필드에서 아이템 삭제
-			List<Entity> entityList = Data.GetEntitiesData(Game.sceneTable.Peek());
+			List<Entity> entityList = Data.GetEntitiesData(Game.currentMap);
 			entityList.Remove(this); // self 제거
 		}
 	}
