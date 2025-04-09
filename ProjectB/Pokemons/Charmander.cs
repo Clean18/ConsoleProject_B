@@ -31,7 +31,6 @@ namespace ProjectB.Pokemons
 			{
 				new Tackle(),
 				new Ember(),
-				new WaterGun(),
 			};
 		}
 

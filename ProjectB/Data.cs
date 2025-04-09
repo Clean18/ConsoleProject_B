@@ -93,17 +93,17 @@ namespace ProjectB
 			{
 				[Map.Field] = new List<Tile>
 				{
-					new GrassTile1(new Position(5, 3)),
-					new GrassTile2(new Position(6, 3)),
-					new GrassTile1(new Position(7, 3)),
+					new GrassTile1(new Position(5, 3), rate: Game.globalRandom.Next(0, 100), minLevel: 1, maxLevel: 5, ids: [ 1, 4, 7 ]),
+					new GrassTile2(new Position(6, 3), rate: Game.globalRandom.Next(0, 100), minLevel: 1, maxLevel: 5, ids: [ 1, 4, 7 ]),
+					new GrassTile1(new Position(7, 3), rate: Game.globalRandom.Next(0, 100), minLevel: 1, maxLevel: 5, ids: [ 1, 4, 7 ]),
 
-					new GrassTile2(new Position(5, 4)),
-					new GrassTile1(new Position(6, 4)),
-					new GrassTile2(new Position(7, 4)),
+					new GrassTile2(new Position(5, 4), rate: Game.globalRandom.Next(0, 100), minLevel: 1, maxLevel: 5, ids: [ 1, 4, 7 ]),
+					new GrassTile1(new Position(6, 4), rate: Game.globalRandom.Next(0, 100), minLevel: 1, maxLevel: 5, ids: [1, 4, 7]),
+					new GrassTile2(new Position(7, 4), rate: Game.globalRandom.Next(0, 100), minLevel: 1, maxLevel: 5, ids: [ 1, 4, 7 ]),
 
-					new GrassTile1(new Position(5, 5)),
-					new GrassTile2(new Position(6, 5)),
-					new GrassTile1(new Position(7, 5)),
+					new GrassTile1(new Position(5, 5), rate: Game.globalRandom.Next(0, 100), minLevel: 1, maxLevel: 5, ids: [ 1, 4, 7 ]),
+					new GrassTile2(new Position(6, 5), rate: Game.globalRandom.Next(0, 100), minLevel: 1, maxLevel: 5, ids: [ 1, 4, 7 ]),
+					new GrassTile1(new Position(7, 5), rate: Game.globalRandom.Next(0, 100), minLevel: 1, maxLevel: 5, ids: [ 1, 4, 7 ]),
 				},
 			};
 		}

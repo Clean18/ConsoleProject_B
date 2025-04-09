@@ -9,15 +9,17 @@ namespace ProjectB.Tiles
 		public int EncounterRate { get; private set; }
 		public int MinLevel { get; private set; }
 		public int MaxLevel { get; private set; }
-
 		// 푸키먼들도 가지고 있어야함
+		public int[] PokemonIds { get; set; }
 
-		public GrassTile1(Position position, int rate = 0, int minLevel = 1, int maxLevel = 5, ConsoleColor bgColor = ConsoleColor.Black)
-			: base('w', position, ConsoleColor.Green, bgColor)
+		public GrassTile1(Position position, int[] ids, int rate = 0, int minLevel = 1, int maxLevel = 5)
+			: base('w', position, ConsoleColor.Green, ConsoleColor.Black)
 		{
-			EncounterRate = rate;
-			MinLevel = minLevel;
-			MaxLevel = maxLevel;
+
+			this.EncounterRate = rate;
+			this.MinLevel = minLevel;
+			this.MaxLevel = maxLevel;
+			this.PokemonIds = ids;
 		}
 
 		public bool IsTrigger(Player player)
@@ -34,8 +36,33 @@ namespace ProjectB.Tiles
 				int ran = Game.globalRandom.Next(100);
 				if (ran < EncounterRate)
 				{
-					// 배틀
 					// 어떻게 랜덤으로 관리하지
+					int level = Game.globalRandom.Next(MinLevel, MaxLevel + 1);
+					int id = PokemonIds[Game.globalRandom.Next(PokemonIds.Length)];
+
+					Pokemon pokemon = Pokemon.Create(id, level);
+					// 도감에 없으면 리턴
+					if (pokemon == null)
+						return;
+
+					// 플레이어가 가진 모든 포켓몬들이 기절이면 리턴
+					if (player.MyFirstPoke() == null)
+						return;
+
+					// 배틀
+					// 야생
+					Battle.enemyPokemon = pokemon;
+					Battle.enemyParty = null;
+					Battle.isTrainer = false;
+					Battle.enemyName = pokemon.Name!;
+					Game.sceneTable.Push(Scene.WildBattleIntro);
+
+					// 트레이너
+					//Battle.enemyPokemon = null;
+					//Battle.enemyParty = new List<Pokemon>() { pokemon };
+					//Battle.isTrainer = true;
+					//Battle.enemyName = "트레이너이름";
+					//Game.sceneTable.Push(Scene.TrainerBattleIntro);
 				}
 			}
 		}

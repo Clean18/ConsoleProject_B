@@ -1,4 +1,5 @@
-﻿using ProjectB.Structs;
+﻿using ProjectB.Pokemons;
+using ProjectB.Structs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -87,6 +88,11 @@ namespace ProjectB
 			Hp = MaxHp;
 		}
 
+		public Pokemon()
+		{
+
+		}
+
 		// 개체값 종족값 레벨을 계산해서 기본 스탯 반환
 		private PokemonStat GetStat()
 		{
@@ -144,6 +150,19 @@ namespace ProjectB
 			var temp = Skills[from];
 			this.Skills[from] = Skills[to];
 			this.Skills[to] = temp;
+		}
+
+		// TODO : 도감추가
+		public static Pokemon Create(int id, int level)
+		{
+			switch (id)
+			{
+				case 1: return new Bulbasaur(level);
+				case 4: return new Charmander(level);
+				case 7: return new Squirtle(level);
+
+				default: return null;
+			}
 		}
 	}
 }

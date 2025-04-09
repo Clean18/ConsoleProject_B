@@ -20,7 +20,8 @@ namespace ProjectB
 		PokemonDetail,	// 능력치
 		PokemonHasSkill,	// 능력치 > 기술
 		PokemonSkillInfo,	// 기술
-		BattleIntro,	// 배틀 진입시
+		WildBattleIntro,	// 야생 배틀 진입시
+		TrainerBattleIntro,	// 트레이너 배틀 진입시
 		Battle,	// 배틀 중일 떄 / 싸우다, 가방, 포켓몬, 도망가기
 		Inventory,
 		MyInfo
@@ -115,6 +116,19 @@ namespace ProjectB
 					Print.PrintMyInfo(player!);
 					break;
 
+				// 야생 배틀 인트로 씬
+				case Scene.WildBattleIntro:
+					Print.PrintWildBattleIntro(player!);
+					break;
+
+				// 트레이너 배틀 인트로 씬
+				case Scene.TrainerBattleIntro:
+					break;
+
+				// 배틀 씬
+				case Scene.Battle:
+					Print.PrintBattle(player!);
+					break;
 			}
 		}
 

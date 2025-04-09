@@ -1,12 +1,14 @@
 ﻿using ProjectB.Entities;
-using System.IO;
+using ProjectB.Structs;
 
 namespace ProjectB
 {
 	public static class Print
 	{
-		static int startX = 5;
-		static int startY = 3;
+		public const int startX = 5;    // 화면 여백
+		public const int startY = 3;    // 화면 여백
+		public const int battleStartY = 14; // 배틀 출력시 시작 Y
+		public static Position battleLogPos = new Position(25, 14);
 
 		public static void PrintStart()
 		{
@@ -25,9 +27,9 @@ namespace ProjectB
 				switch (key)
 				{
 					case ConsoleKey.D1:
-						Game.sceneTable.Push(Scene.Field);	// 필드씬 전환
-						Game.currentMap = Data.Map.Field;	// 필드맵으로 이동
-						Game.Player.SetCurrentField();		// 현재 맵 데이터 필드에 보관
+						Game.sceneTable.Push(Scene.Field);  // 필드씬 전환
+						Game.currentMap = Data.Map.Field;   // 필드맵으로 이동
+						Game.Player.SetCurrentField();      // 현재 맵 데이터 필드에 보관
 						Console.Clear();
 						return;
 
@@ -280,7 +282,7 @@ namespace ProjectB
 							// 포켓몬 파티메뉴 출력
 							Game.sceneTable.Push(Scene.PartyMenu);
 							PrintPartyMenu(partyIndex, party.Count);
-							
+
 						}
 						break;
 
@@ -752,6 +754,177 @@ namespace ProjectB
 		public static void PrintMyInfo(Player player)
 		{
 			// TODO : 내정보 출력
+		}
+
+		public static void PrintWildBattleIntro(Player player)
+		{
+			// TODO : 트레이너, 필드인카운트에 딸 ㅏ다름
+			// 전부 출력 후
+			Pokemon myPoke = player.MyFirstPoke();
+			if (myPoke == null)
+				return;
+
+			for (int y = 0; y < Console.WindowHeight; y++)
+			{
+				Console.SetCursorPosition(0, y);
+				Console.BackgroundColor = ConsoleColor.Black;
+				Console.Write(new string(' ', Console.WindowWidth));
+				Thread.Sleep(20);
+			}
+			Console.BackgroundColor = ConsoleColor.Gray;
+			Console.Clear();
+			Thread.Sleep(100);
+
+			Console.BackgroundColor = ConsoleColor.DarkGray;
+			Console.Clear();
+			Thread.Sleep(100);
+
+			Console.BackgroundColor = ConsoleColor.Black;
+			Console.Clear();
+			Thread.Sleep(100);
+
+			// 여기서 텍스트 출력
+			Console.Clear();
+			// 상대방 출력
+			Pokemon enemyPoke = Battle.enemyPokemon!;
+			PrintEnemyPokemon(enemyPoke);
+
+			// 내 푸키먼 출력
+			int nextLine = PrintMyPokemon(myPoke);
+
+			Console.SetCursorPosition(1, nextLine);
+			Console.WriteLine($"앗! 야생의 {Battle.enemyPokemon!.Name} 이(가) 튀어나왔다!");
+			Thread.Sleep(1000);
+
+			//Game.sceneTable.Pop();  // BattleIntro Pop
+			Game.sceneTable.Push(Scene.Battle); // Battle Push > 렌더에서 PrintBattle 함수 실행
+												//Game.sceneTable.Push(Scene.Field);
+		}
+
+		static int PrintEnemyPokemon(Pokemon pokemon)
+		{
+			Console.SetCursorPosition(startX, startY);
+			Console.Write($"┃ {pokemon.Name} {(pokemon.Gender == Gender.Male ? "♂" : "♀")} Lv.{pokemon.Level}");
+			Console.SetCursorPosition(startX, startY + 1);
+			Console.Write("┃ HP: ");
+			PrintHpBar(pokemon, false);
+			Console.SetCursorPosition(startX, startY + 2);
+			Console.WriteLine("┗━━━━━━━━━━━━━━━━━▶");
+			// 다음줄은 y4
+			return startY + 3;
+		}
+
+		static int PrintMyPokemon(Pokemon pokemon)
+		{
+			int line = 5;
+
+			Console.SetCursorPosition(startX, startY + line + 0);
+			Console.Write($" {pokemon.Name} {(pokemon.Gender == Gender.Male ? "♂" : "♀")} Lv.{pokemon.Level}");
+			Console.SetCursorPosition(startX, startY + line + 1);
+			Console.Write(" HP: ");
+			PrintHpBar(pokemon, false);
+			Console.Write(" ┃");
+			Console.SetCursorPosition(startX + 6, startY + line + 2);
+			Console.Write($"{pokemon.Hp,3} / {pokemon.MaxHp,3}   ┃");
+			Console.SetCursorPosition(startX, startY + line + 3);
+			Console.WriteLine("◀━━━━━━━━━━━━━━━━━┛");
+			// 다음줄은 y12
+			return startY + line + 4;
+		}
+
+		public static void PrintTrainerIntro(Player player)
+		{
+			Game.sceneTable.Pop();  // BattleIntro Pop
+			Game.sceneTable.Push(Scene.Battle); // Battle Push > 렌더에서 PrintBattle 함수 실행
+		}
+
+		public static void PrintBattle(Player player)
+		{
+			// TODO : 배틀
+			ClearLine(0, battleStartY - 2, 50, 2); // 내 푸키먼 체력바 아래로 2칸 지우기
+
+			//string text1 = "┏━━━━━━━━━━━━━━━━━━━━━━━━━━┓";
+			//string text2 = "┃ [▶] 싸우다  [▶] 가방     ┃";
+			//string text3 = "┃ [▶] 포켓몬  [▶] 도망치다 ┃";
+			//string text4 = "┗━━━━━━━━━━━━━━━━━━━━━━━━━━┛";
+
+			int menuIndex = 1;
+			while (Game.currentMap == Data.Map.Field)
+			{
+				Console.SetCursorPosition(1, battleStartY + -2);
+				Console.WriteLine("===========================");
+				Console.SetCursorPosition(1, battleStartY + 1);
+				Console.WriteLine("===========================");
+				Console.SetCursorPosition(1, battleStartY + 2); // battleStartY = 14
+				Console.WriteLine("┏━━━━━━━━━━━━━━━━━━━━━━━━━━┓");
+				Console.SetCursorPosition(1, battleStartY + 3);
+				Console.WriteLine($"┃ [{(menuIndex == 1 ? "▶" : " ")}] 싸우다  [{(menuIndex == 2 ? "▶" : " ")}] 가방     ┃");
+				Console.SetCursorPosition(1, battleStartY + 4);
+				Console.WriteLine($"┃ [{(menuIndex == 3 ? "▶" : " ")}] 포켓몬  [{(menuIndex == 4 ? "▶" : " ")}] 도망치다 ┃");
+				Console.SetCursorPosition(1, battleStartY + 5); // 19
+				Console.WriteLine("┗━━━━━━━━━━━━━━━━━━━━━━━━━━┛");
+
+
+				ConsoleKey key = Console.ReadKey(true).Key;
+
+				switch (key)
+				{
+					case ConsoleKey.UpArrow:
+						switch (menuIndex)
+						{
+							case 3: menuIndex = 1; break;
+							case 4: menuIndex = 2; break;
+						}
+						break;
+
+					case ConsoleKey.DownArrow:
+						switch (menuIndex)
+						{
+							case 1: menuIndex = 3; break;
+							case 2: menuIndex = 4; break;
+						}
+						break;
+
+					case ConsoleKey.LeftArrow:
+						switch (menuIndex)
+						{
+							case 2: menuIndex = 1; break;
+							case 4: menuIndex = 3; break;
+						}
+						break;
+
+					case ConsoleKey.RightArrow:
+						switch (menuIndex)
+						{
+							case 1: menuIndex = 2; break;
+							case 3: menuIndex = 4; break;
+						}
+						break;
+
+					case ConsoleKey.Z:
+						switch (menuIndex)
+						{
+							case 1:	// 싸우다
+								// TODO : 기술 사용
+								break;
+
+							case 2:	// 가방
+								// TODO : 가방 UI 출력
+								break;
+
+							case 3:	// 포켓몬
+								// TODO : 교체 UI 출력
+								break;
+
+							case 4:	// 도망치다
+								// TODO : 도망치기 확률계산 후 도망 or 턴 상대에게
+								break;
+						}
+						break;
+				}
+			}
+
+
 		}
 	}
 }

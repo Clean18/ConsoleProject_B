@@ -113,7 +113,9 @@ namespace ProjectB.Entities
 			{
 				if (tileObj is IWildEncounter wildEncounter)
 				{
-					wildEncounter.OnTrigger(this);
+					// 1마리 이상 가지고 있을때만
+					if (Party.Count > 0)
+						wildEncounter.OnTrigger(this);
 				}
 			}
 		}
@@ -199,5 +201,14 @@ namespace ProjectB.Entities
 			inven.Add(item);
 		}
 
+		public Pokemon MyFirstPoke()
+		{
+			foreach (var poke in Party)
+			{
+				if (poke.Hp > 0)
+					return poke;
+			}
+			return null;
+		}
 	}
 }

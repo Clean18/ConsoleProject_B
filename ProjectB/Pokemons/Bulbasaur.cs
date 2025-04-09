@@ -25,8 +25,6 @@ namespace ProjectB.Pokemons
 			{
 				new Tackle(),
 				new VineWhip(15),
-				new Ember(),
-				new WaterGun(),
 			};
 		}
 
