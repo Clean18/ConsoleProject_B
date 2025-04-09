@@ -7,7 +7,7 @@ namespace ProjectB
 	{
 		public const int startX = 5;    // 화면 여백
 		public const int startY = 3;    // 화면 여백
-		public const int battleStartY = 14; // 배틀 출력시 시작 Y
+		public const int battleStartY = 12; // 배틀 출력시 시작 Y
 		public static Position battleLogPos = new Position(25, 14);
 
 		public static void PrintStart()
@@ -28,7 +28,7 @@ namespace ProjectB
 				{
 					case ConsoleKey.D1:
 						Game.sceneTable.Push(Scene.Field);  // 필드씬 전환
-						Game.currentMap = Data.Map.Field;   // 필드맵으로 이동
+						Game.currentMap = Map.Field;   // 필드맵으로 이동
 						Game.Player.SetCurrentField();      // 현재 맵 데이터 필드에 보관
 						Console.Clear();
 						return;
@@ -785,6 +785,7 @@ namespace ProjectB
 
 			// 여기서 텍스트 출력
 			Console.Clear();
+
 			// 상대방 출력
 			Pokemon enemyPoke = Battle.enemyPokemon!;
 			PrintEnemyPokemon(enemyPoke);
@@ -793,15 +794,31 @@ namespace ProjectB
 			int nextLine = PrintMyPokemon(myPoke);
 
 			Console.SetCursorPosition(1, nextLine);
-			Console.WriteLine($"앗! 야생의 {Battle.enemyPokemon!.Name} 이(가) 튀어나왔다!");
+			string text = $"앗! 야생의 {Battle.enemyPokemon!.Name} 이(가) 튀어나왔다!";
+			foreach (char c in text)
+			{
+				Console.Write(c);
+				Thread.Sleep(100);
+			}
+			Console.SetCursorPosition(1, nextLine + 1);
+			string text2 = $"가랏! {myPoke.Name}!";
+			foreach (char c in text2)
+			{
+				Console.Write(c);
+				Thread.Sleep(100);
+			}
 			Thread.Sleep(1000);
 
-			//Game.sceneTable.Pop();  // BattleIntro Pop
+			// Battle 클래스에 정보 저장
+			// 상대 푸키먼 정보는 타일에서 저장
+			Battle.myPokemon = myPoke;
+			Battle.myParty = player.Party;
+
+			Game.sceneTable.Pop();  // BattleIntro Pop
 			Game.sceneTable.Push(Scene.Battle); // Battle Push > 렌더에서 PrintBattle 함수 실행
-												//Game.sceneTable.Push(Scene.Field);
 		}
 
-		static int PrintEnemyPokemon(Pokemon pokemon)
+		public static int PrintEnemyPokemon(Pokemon pokemon)
 		{
 			Console.SetCursorPosition(startX, startY);
 			Console.Write($"┃ {pokemon.Name} {(pokemon.Gender == Gender.Male ? "♂" : "♀")} Lv.{pokemon.Level}");
@@ -814,7 +831,7 @@ namespace ProjectB
 			return startY + 3;
 		}
 
-		static int PrintMyPokemon(Pokemon pokemon)
+		public static int PrintMyPokemon(Pokemon pokemon)
 		{
 			int line = 5;
 
@@ -834,6 +851,8 @@ namespace ProjectB
 
 		public static void PrintTrainerIntro(Player player)
 		{
+			// TODO : 트레이너 상대 배틀인트로 출력
+
 			Game.sceneTable.Pop();  // BattleIntro Pop
 			Game.sceneTable.Push(Scene.Battle); // Battle Push > 렌더에서 PrintBattle 함수 실행
 		}
@@ -841,29 +860,71 @@ namespace ProjectB
 		public static void PrintBattle(Player player)
 		{
 			// TODO : 배틀
-			ClearLine(0, battleStartY - 2, 50, 2); // 내 푸키먼 체력바 아래로 2칸 지우기
+			ClearLine(0, battleStartY - 0, 50, 2); // 내 푸키먼 체력바 아래로 2칸 지우기
 
 			//string text1 = "┏━━━━━━━━━━━━━━━━━━━━━━━━━━┓";
 			//string text2 = "┃ [▶] 싸우다  [▶] 가방     ┃";
 			//string text3 = "┃ [▶] 포켓몬  [▶] 도망치다 ┃";
 			//string text4 = "┗━━━━━━━━━━━━━━━━━━━━━━━━━━┛";
 
-			int menuIndex = 1;
-			while (Game.currentMap == Data.Map.Field)
+			switch (Battle.state)
 			{
-				Console.SetCursorPosition(1, battleStartY + -2);
-				Console.WriteLine("===========================");
-				Console.SetCursorPosition(1, battleStartY + 1);
-				Console.WriteLine("===========================");
-				Console.SetCursorPosition(1, battleStartY + 2); // battleStartY = 14
-				Console.WriteLine("┏━━━━━━━━━━━━━━━━━━━━━━━━━━┓");
-				Console.SetCursorPosition(1, battleStartY + 3);
-				Console.WriteLine($"┃ [{(menuIndex == 1 ? "▶" : " ")}] 싸우다  [{(menuIndex == 2 ? "▶" : " ")}] 가방     ┃");
-				Console.SetCursorPosition(1, battleStartY + 4);
-				Console.WriteLine($"┃ [{(menuIndex == 3 ? "▶" : " ")}] 포켓몬  [{(menuIndex == 4 ? "▶" : " ")}] 도망치다 ┃");
-				Console.SetCursorPosition(1, battleStartY + 5); // 19
-				Console.WriteLine("┗━━━━━━━━━━━━━━━━━━━━━━━━━━┛");
+				case BattleState.Intro:
+					//Battle.state = BattleState.PlayerTurn;
+					Battle.state = BattleState.EnemyTurn;
+					//Battle.state = BattleState.SpeedCheck;
+					break;
+				case BattleState.SpeedCheck:
+					Battle.SpeedCheck();
+					break;
 
+				case BattleState.PlayerTurn:
+					PrintPlayerTurn(player);
+					break;
+
+				case BattleState.EnemyTurn:
+					// 상대가 먼저 공격
+					Battle.EnemyAction();
+					break;
+
+				case BattleState.PlayerSkill:
+					// 보유 기술 출력
+					break;
+
+				case BattleState.PlayerInventory:
+					break;
+
+				case BattleState.PlayerPokemon:
+					break;
+
+				case BattleState.PlayerRun:
+					break;
+
+				case BattleState.Win:
+					break;
+
+				case BattleState.Lose:
+					break;
+			}
+		}
+
+		static void PrintPlayerTurn(Player player)
+		{
+			int menuIndex = 1;
+			while (Battle.state == BattleState.PlayerTurn)
+			{
+				Console.SetCursorPosition(1, battleStartY + 0);
+				Console.WriteLine("===========================");
+				Console.SetCursorPosition(1, battleStartY + 3);
+				Console.WriteLine("===========================");
+				Console.SetCursorPosition(1, battleStartY + 4); // battleStartY = 12
+				Console.WriteLine("┏━━━━━━━━━━━━━━━━━━━━━━━━━━┓");
+				Console.SetCursorPosition(1, battleStartY + 5);
+				Console.WriteLine($"┃ [{(menuIndex == 1 ? "▶" : " ")}] 싸우다  [{(menuIndex == 2 ? "▶" : " ")}] 가방     ┃");
+				Console.SetCursorPosition(1, battleStartY + 6);
+				Console.WriteLine($"┃ [{(menuIndex == 3 ? "▶" : " ")}] 포켓몬  [{(menuIndex == 4 ? "▶" : " ")}] 도망치다 ┃");
+				Console.SetCursorPosition(1, battleStartY + 7); // 19
+				Console.WriteLine("┗━━━━━━━━━━━━━━━━━━━━━━━━━━┛");
 
 				ConsoleKey key = Console.ReadKey(true).Key;
 
@@ -904,27 +965,35 @@ namespace ProjectB
 					case ConsoleKey.Z:
 						switch (menuIndex)
 						{
-							case 1:	// 싸우다
-								// TODO : 기술 사용
+							case 1: // 싸우다
+								Battle.state = BattleState.PlayerSkill;
 								break;
 
-							case 2:	// 가방
-								// TODO : 가방 UI 출력
+							case 2: // 가방
+								Battle.state = BattleState.PlayerInventory;
 								break;
 
-							case 3:	// 포켓몬
-								// TODO : 교체 UI 출력
+							case 3: // 포켓몬
+								Battle.state = BattleState.PlayerPokemon;
 								break;
 
-							case 4:	// 도망치다
-								// TODO : 도망치기 확률계산 후 도망 or 턴 상대에게
+							case 4: // 도망치다
+								Battle.state = BattleState.PlayerRun;
 								break;
 						}
 						break;
 				}
 			}
+		}
 
-
+		public static void PrintBattleText(string text, int wait, int line)
+		{
+			int y = line == 2 ? 14 : 13;
+			Console.SetCursorPosition(1, y);
+			Console.WriteLine(text);
+			Thread.Sleep(wait * 1000);
+			Console.SetCursorPosition(1, y);
+			Print.ClearLine(0, line, 100, line);
 		}
 	}
 }

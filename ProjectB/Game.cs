@@ -39,7 +39,7 @@ namespace ProjectB
 		public static Player Player { get { return player!; } } // 플레이어 프로퍼티, 콜하는 시점에선 null일 수가 없음 진짜임
 		static List<MoveObject> currentObjects => Data.GetMoveObjects(currentMap); // 현재 씬에 존재하는 무브 오브젝트 데이터
 
-		public static Data.Map currentMap;
+		public static Map currentMap;
 
 		public static void Run()
         {

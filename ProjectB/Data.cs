@@ -6,12 +6,12 @@ using ProjectB.Tiles;
 
 namespace ProjectB
 {
+	public enum Map
+	{
+		Field,  // 기본맵
+	}
 	public static class Data
 	{
-		public enum Map
-		{
-			Field,	// 기본맵
-		}
 
 		private static Dictionary<Map, List<string>>? mapData;
 		private static Dictionary<Map, List<Entity>>? mapEntityData;

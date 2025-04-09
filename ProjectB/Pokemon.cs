@@ -67,6 +67,8 @@ namespace ProjectB
 		public PokeType PokeType1 { get; set; } // 타입1
 		public PokeType PokeType2 { get; set; } // 타입2
 
+		public bool IsDead { get; set; }
+
 		public delegate void LevelupEvent(Pokemon pokemon);
 		public event LevelupEvent? OnLevelup;
 
@@ -86,11 +88,8 @@ namespace ProjectB
 			NextExp = GetNextEXP(level);
 			State = State.OK;
 			Hp = MaxHp;
-		}
 
-		public Pokemon()
-		{
-
+			IsDead = false;
 		}
 
 		// 개체값 종족값 레벨을 계산해서 기본 스탯 반환
@@ -162,6 +161,30 @@ namespace ProjectB
 				case 7: return new Squirtle(level);
 
 				default: return null;
+			}
+		}
+
+		public void TakeDamage(Pokemon attacker, int damage)
+		{
+			// 이미죽어있으면 리턴
+			if (this.IsDead)
+				return;
+
+			this.Hp -= damage;
+
+			// 푸키먼 체력 갱신
+			Print.PrintMyPokemon(this);
+			Thread.Sleep(2000);
+			if (this.Hp <= 0)
+			{
+				this.Hp = 0;
+				this.IsDead = true;
+				// 배틀중이면 교체씬으로
+				Console.SetCursorPosition(1, 13);
+				Console.WriteLine($"{this.Name}는(은) 쓰러졌다!");
+				Thread.Sleep(2000);
+				Console.SetCursorPosition(1, 13);
+				Print.ClearLine(0, 1, 80, 1);
 			}
 		}
 	}
