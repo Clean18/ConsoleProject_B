@@ -2,6 +2,7 @@
 using ProjectB.Items;
 using ProjectB.Pokemons;
 using ProjectB.Structs;
+using ProjectB.Tiles;
 
 namespace ProjectB
 {
@@ -10,14 +11,14 @@ namespace ProjectB
 		private static Dictionary<Scene, List<string>>? mapData;
 		private static Dictionary<Scene, List<Entity>>? mapEntityData;
 		private static Dictionary<string, Item>? itemData;
-		private static Dictionary<Scene, FieldItem>? fieldItemData;
-		
+		private static Dictionary<Scene, List<Tile>>? mapTileData;
 
 		public static void DataInit()
 		{
 			MapInit();
 			ItemInit();
 			MapEntityInit();
+			MapTileInit();
 		}
 
 		static void MapInit()
@@ -56,7 +57,14 @@ namespace ProjectB
 				}
 			}
 		} // 모든 txt 불러와서 Map 초기화
-
+		static void ItemInit()
+		{
+			itemData = new Dictionary<string, Item>
+			{
+				["몬스터볼"] = new PokeBall(),
+				["상처약"] = new Potion(),
+			};
+		}
 		static void MapEntityInit() // MoveObject 초기화 데이터 / 필드마다 생성할 아이템, 무브오브젝트 관리
 		{
 			mapEntityData = new Dictionary<Scene, List<Entity>>()
@@ -74,15 +82,27 @@ namespace ProjectB
 				},
 			};
 		}
-
-		static void ItemInit()
+		static void MapTileInit()
 		{
-			itemData = new Dictionary<string, Item>
+			mapTileData = new Dictionary<Scene, List<Tile>>()
 			{
-				["몬스터볼"] = new PokeBall(),
-				["상처약"] = new Potion(),
+				[Scene.Field] = new List<Tile>
+				{
+					new GrassTile1(new Position(5, 3)),
+					new GrassTile2(new Position(6, 3)),
+					new GrassTile1(new Position(7, 3)),
+
+					new GrassTile2(new Position(5, 4)),
+					new GrassTile1(new Position(6, 4)),
+					new GrassTile2(new Position(7, 4)),
+
+					new GrassTile1(new Position(5, 5)),
+					new GrassTile2(new Position(6, 5)),
+					new GrassTile1(new Position(7, 5)),
+				},
 			};
 		}
+
 
 		// 씬을 key로 값을 받아오는 함수들
 		public static List<string> GetMapData(Scene scene) => mapData![scene];
@@ -96,5 +116,6 @@ namespace ProjectB
 				return mapEntityData[scene].OfType<MoveObject>().ToList();
 		}
 		public static List<Entity> GetEntitiesData(Scene scene) => mapEntityData![scene];
+		public static List<Tile> GetTiles(Scene scene) => mapTileData![scene];
 	}
 }

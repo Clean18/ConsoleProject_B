@@ -9,7 +9,19 @@ using System.Threading.Tasks;
 namespace ProjectB
 {
     // 각 씬에서 메인 화면들
-	public enum Scene { Start, Field, Menu, Party, PartyMenu, PokemonDetail,PokemonHasSkill, PokemonSkillInfo, Inventory, MyInfo }
+	public enum Scene
+	{
+		Start,	// 시작화면
+		Field,	// 플레이어를 조작가능한 필드
+		Menu,	// 메뉴
+		Party,	// 메뉴 > 가지고 있는 푸키먼들
+		PartyMenu,	// 메뉴 > 파티 아래에 출력하는 옵션들 능력치, 순서바꾸기, 기술, 취소
+		PokemonDetail,	// 능력치
+		PokemonHasSkill,	// 능력치 > 기술
+		PokemonSkillInfo,	// 기술
+		Inventory,
+		MyInfo
+	}
 
 	public static class Game
     {

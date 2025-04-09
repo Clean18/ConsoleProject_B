@@ -1,4 +1,5 @@
 ﻿using ProjectB.Entities;
+using System.IO;
 
 namespace ProjectB
 {
@@ -38,8 +39,10 @@ namespace ProjectB
 		public static void PrintAll(Player player)
 		{
 			// 출력할 맵, 오브젝트, 플레이어(매개변수)
-			List<string> currentMap = Data.GetMapData(Game.sceneTable.Peek());
-			List<Entity> currentObjects = Data.GetEntitiesData(Game.sceneTable.Peek());
+			Scene curScene = Game.sceneTable.Peek();
+			List<string> currentMap = Data.GetMapData(curScene);
+			List<Entity> currentObjects = Data.GetEntitiesData(curScene);
+			List<Tile> currentTiles = Data.GetTiles(curScene);
 
 			// 일정 여백 띄우기
 			// TODO : 일정 여백 띄운 만큼 채우기
@@ -78,6 +81,19 @@ namespace ProjectB
 						bgBuffer[y, x] = ConsoleColor.Black;
 						buffer[y, x] = currentMap[mapY][mapX];
 					}
+				}
+			}
+
+			foreach (var tile in currentTiles)
+			{
+				int dx = tile.position.x - player.position.x + player.visionX;
+				int dy = tile.position.y - player.position.y + player.visionY;
+
+				if ((dx >= 0) && (dx < width) && (dy >= 0) && (dy < height))
+				{
+					fgBuffer[dy, dx] = tile.color;
+					bgBuffer[dy, dx] = tile.bgColor;
+					buffer[dy, dx] = tile.sprite;
 				}
 			}
 
@@ -128,7 +144,6 @@ namespace ProjectB
 			// 세이브
 			// 옵션
 			// 종료
-
 
 			int currentMenu = 1;
 			while (Game.sceneTable.Peek() == Scene.Menu)
@@ -208,7 +223,6 @@ namespace ProjectB
 
 		public static void PrintParty(Player player)
 		{
-			// TODO : 파티 출력
 			List<Pokemon> party = player.Party;
 
 			Console.Clear();
@@ -264,76 +278,83 @@ namespace ProjectB
 						{
 							// 포켓몬 파티메뉴 출력
 							Game.sceneTable.Push(Scene.PartyMenu);
-							int partyMenuIndex = 1;
-							while (Game.sceneTable.Peek() == Scene.PartyMenu)
-							{
-								// [ ] 능력치
-								Console.SetCursorPosition(startX, startY + party.Count + 3);
-								Console.WriteLine(partyMenuIndex == 1 ? "[▶]  능력치    " : "[ ]  능력치    ");
-								// [ ] 순서바꾸기
-								Console.SetCursorPosition(startX, startY + party.Count + 4);
-								Console.WriteLine(partyMenuIndex == 2 ? "[▶]  순서바꾸기" : "[ ]  순서바꾸기");
-								// [ ] 기술
-								Console.SetCursorPosition(startX, startY + party.Count + 5);
-								Console.WriteLine(partyMenuIndex == 3 ? "[▶]  기술      " : "[ ]  기술      ");
-								// [ ] 취소
-								Console.SetCursorPosition(startX, startY + party.Count + 6);
-								Console.WriteLine(partyMenuIndex == 4 ? "[▶]  취소      " : "[ ]  취소      ");
+							PrintPartyMenu(partyIndex, party.Count);
+							
+						}
+						break;
 
-								ConsoleKey partyMenuKey = Console.ReadKey(true).Key;
+					case ConsoleKey.X:
+					case ConsoleKey.Escape:
+						Game.sceneTable.Pop();
+						Console.Clear();
+						break;
+				}
+			}
+		}
 
-								switch (partyMenuKey)
-								{
-									case ConsoleKey.UpArrow:
-									case ConsoleKey.LeftArrow:
-										// i --
-										partyMenuIndex--;
-										if (partyMenuIndex < 1)
-											partyMenuIndex = 4;
-										break;
+		static void PrintPartyMenu(int partyIndex, int partyCount)
+		{
+			int partyMenuIndex = 1;
+			var party = Game.Player.Party;
+			while (Game.sceneTable.Peek() == Scene.PartyMenu)
+			{
+				// [ ] 능력치
+				Console.SetCursorPosition(startX, startY + party.Count + 3);
+				Console.WriteLine(partyMenuIndex == 1 ? "[▶]  능력치    " : "[ ]  능력치    ");
+				// [ ] 순서바꾸기
+				Console.SetCursorPosition(startX, startY + party.Count + 4);
+				Console.WriteLine(partyMenuIndex == 2 ? "[▶]  순서바꾸기" : "[ ]  순서바꾸기");
+				// [ ] 기술
+				Console.SetCursorPosition(startX, startY + party.Count + 5);
+				Console.WriteLine(partyMenuIndex == 3 ? "[▶]  기술      " : "[ ]  기술      ");
+				// [ ] 취소
+				Console.SetCursorPosition(startX, startY + party.Count + 6);
+				Console.WriteLine(partyMenuIndex == 4 ? "[▶]  취소      " : "[ ]  취소      ");
 
-									case ConsoleKey.DownArrow:
-									case ConsoleKey.RightArrow:
-										// i ++
-										partyMenuIndex++;
-										if (partyMenuIndex > 4)
-											partyMenuIndex = 1;
-										break;
+				ConsoleKey partyMenuKey = Console.ReadKey(true).Key;
 
-									case ConsoleKey.Z:
-										if (partyMenuIndex == 1)
-										{
-											// 포켓몬 디테일 정보
-											Pokemon pokemon = party[partyIndex];
-											Game.sceneTable.Push(Scene.PokemonDetail);
-											PrintPokemonDetail(pokemon, startX, startY + party.Count + 3);
-										}
-										else if (partyMenuIndex == 2)
-										{
-											// 교체
-											Pokemon pokemon = party[partyIndex];
-											Game.sceneTable.Push(Scene.PokemonHasSkill);
-										}
-										else if (partyMenuIndex == 3)
-										{
-											// 가진 기술
-											Game.sceneTable.Push(Scene.PokemonHasSkill);
-											PrintPokemonHasSkill(partyIndex, startX, startY + party.Count + 3);
-										}
-										else
-										{
-											Game.sceneTable.Pop();
-											Console.Clear();
-										}
-										break;
+				switch (partyMenuKey)
+				{
+					case ConsoleKey.UpArrow:
+					case ConsoleKey.LeftArrow:
+						// i --
+						partyMenuIndex--;
+						if (partyMenuIndex < 1)
+							partyMenuIndex = 4;
+						break;
 
-									case ConsoleKey.X:
-									case ConsoleKey.Escape:
-										Game.sceneTable.Pop();
-										Console.Clear();
-										break;
-								}
-							}
+					case ConsoleKey.DownArrow:
+					case ConsoleKey.RightArrow:
+						// i ++
+						partyMenuIndex++;
+						if (partyMenuIndex > 4)
+							partyMenuIndex = 1;
+						break;
+
+					case ConsoleKey.Z:
+						if (partyMenuIndex == 1)
+						{
+							// 포켓몬 디테일 정보
+							Pokemon pokemon = party[partyIndex];
+							Game.sceneTable.Push(Scene.PokemonDetail);
+							PrintPokemonDetail(pokemon, startX, startY + party.Count + 3);
+						}
+						else if (partyMenuIndex == 2)
+						{
+							// TODO : 교체
+							Pokemon pokemon = party[partyIndex];
+							//Game.sceneTable.Push(Scene.PokemonHasSkill);
+						}
+						else if (partyMenuIndex == 3)
+						{
+							// 가진 기술
+							Game.sceneTable.Push(Scene.PokemonHasSkill);
+							PrintPokemonHasSkill(partyIndex, startX, startY + party.Count + 3); // index를 넘겨야 변경가능
+						}
+						else
+						{
+							Game.sceneTable.Pop();
+							Console.Clear();
 						}
 						break;
 
@@ -560,6 +581,8 @@ namespace ProjectB
 				}
 				Console.SetCursorPosition(startX, line++);
 				Console.WriteLine("━━━━━━━━━━━━━━━━━━━━━━━");
+				Console.SetCursorPosition(startX, line++);
+				Console.WriteLine("Z:선택 X:나가기");
 				ConsoleKey key = Console.ReadKey(true).Key;
 
 				switch (key)
@@ -602,15 +625,13 @@ namespace ProjectB
 			var pokemon = Game.Player.Party[partyIndex];
 			int changeIndex = -1; // 0번스킬
 			bool isChange = false;
-			int changeY = startY - 5 + changeIndex; // 0번스킬 위치
+			int upLine = 6;
+			int changeY = startY - upLine + changeIndex; // 0번스킬 위치
 
 			while (Game.sceneTable.Peek() == Scene.PokemonSkillInfo)
 			{
 				var curSkill = isChange == false ? pokemon.Skills![skillIndex] : pokemon.Skills?[changeIndex];
 				int line = startY;
-
-				if (!isChange)
-					changeIndex = -1;
 
 				Console.SetCursorPosition(startX, line++);
 				Console.WriteLine($"타입/ {curSkill!.PokeType} / {(curSkill.SkillType == SkillType.Physical ? "물리" : "특수")}");
@@ -647,7 +668,7 @@ namespace ProjectB
 									changeIndex = pokemon.Skills!.Count - 1;
 							}
 
-							changeY = startY - 5 + changeIndex;
+							changeY = startY - upLine + changeIndex;
 							Console.SetCursorPosition(startX, changeY);
 							Console.Write("[▷]");
 						}
@@ -673,7 +694,7 @@ namespace ProjectB
 									changeIndex = 0;
 							}
 
-							changeY = startY - 5 + changeIndex;
+							changeY = startY - upLine + changeIndex;
 							Console.SetCursorPosition(startX, changeY);
 							Console.Write("[▷]");
 						}
@@ -702,7 +723,7 @@ namespace ProjectB
 										break;
 									}
 								}
-								changeY = startY - 5 + changeIndex;
+								changeY = startY - upLine + changeIndex;
 								Console.SetCursorPosition(startX, changeY);
 								Console.Write("[▷]");
 							}
