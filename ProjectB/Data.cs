@@ -10,13 +10,13 @@ namespace ProjectB
 	{
 		public enum Map
 		{
-			Field
+			Field,	// 기본맵
 		}
 
 		private static Dictionary<Map, List<string>>? mapData;
 		private static Dictionary<Map, List<Entity>>? mapEntityData;
-		private static Dictionary<string, Item>? itemData;
 		private static Dictionary<Map, List<Tile>>? mapTileData;
+		private static Dictionary<string, Item>? itemData;
 
 		public static void DataInit()
 		{
@@ -121,6 +121,7 @@ namespace ProjectB
 				return mapEntityData[map].OfType<MoveObject>().ToList();
 		}
 		public static List<Entity> GetEntitiesData(Map map) => mapEntityData![map];
-		public static List<Tile> GetTiles(Map map) => mapTileData![map];
+		public static List<Tile> GetTilesData(Map map) => mapTileData![map];
+		public static Item GetItems(string itemName) => itemData![itemName];
 	}
 }

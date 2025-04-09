@@ -11,7 +11,12 @@ namespace ProjectB.Entities
 		public int visionY; // 플레이어 y 시야
 							// TODO : 돈
 		public Dictionary<ItemType, List<Item>> Inventory { get; set; }
-		public List<Pokemon> Party { get; private set; }
+		public List<Pokemon> Party { get; private set; } // 가지고 있는 푸키먼들
+
+		// 필드데이터
+		List<string> mapData;
+		List<Entity> entityData;
+		List<Tile> tileData;
 
 		public Player(char sprite,
 			Position position,
@@ -34,6 +39,14 @@ namespace ProjectB.Entities
 			Party = new List<Pokemon>(6);
 		}
 
+		// 맵 이동시마다 호출
+		public void SetCurrentField()
+		{
+			mapData = Data.GetMapData(Game.currentMap);
+			entityData = Data.GetEntitiesData(Game.currentMap);
+			tileData = Data.GetTilesData(Game.currentMap);
+		}
+
 		public void KeyHandler(ConsoleKey key)
 		{
 			// TODO : 씬에 따른 방향조절
@@ -46,29 +59,27 @@ namespace ProjectB.Entities
 			{
 				// 우선 필드만
 				case Scene.Field:
-					List<string> mapData = Data.GetMapData(Game.currentMap);
-					List<Entity> entityData = Data.GetEntitiesData(Game.currentMap);
-					FieldInput(key, mapData, entityData);
+					FieldInput(key);
 					break;
 			}
 		}
 
-		void FieldInput(ConsoleKey key, List<string> mapData, List<Entity> entity)
+		void FieldInput(ConsoleKey key)
 		{
 			switch (key)
 			{
 				// 이동
-				case ConsoleKey.UpArrow: Move(Direction.Up, mapData, entity); break;
-				case ConsoleKey.DownArrow: Move(Direction.Down, mapData, entity); break;
-				case ConsoleKey.LeftArrow: Move(Direction.Left, mapData, entity); break;
-				case ConsoleKey.RightArrow: Move(Direction.Right, mapData, entity); break;
+				case ConsoleKey.UpArrow: Move(Direction.Up); break;
+				case ConsoleKey.DownArrow: Move(Direction.Down); break;
+				case ConsoleKey.LeftArrow: Move(Direction.Left); break;
+				case ConsoleKey.RightArrow: Move(Direction.Right); break;
 				// 상호작용
-				case ConsoleKey.Z: Z(this.direction, mapData, entity); break;
+				case ConsoleKey.Z: Z(this.direction); break;
 				case ConsoleKey.Escape: ESC(); break;
 			}
 		}
 
-		void Move(Direction direction, List<string> mapData, List<Entity> entity)
+		void Move(Direction direction)
 		{
 			// 이동은 못해도 방향전환은 해야함
 			this.direction = direction;
@@ -79,16 +90,16 @@ namespace ProjectB.Entities
 				return;
 
 			// 맵 체크
-			char tile = mapData[nextPos.y][nextPos.x];
-			switch (tile)
+			char mapTile = mapData[nextPos.y][nextPos.x];
+			switch (mapTile)
 			{
-				// 제한할 타일
+				// 제한할 맵 타일
 				case '@':
 					return;
 			}
 
 			// 오브젝트 체크
-			foreach (var obj in entity)
+			foreach (var obj in entityData)
 			{
 				// 이동할 위치에 오브젝트가 있으면 제한
 				if (obj.position == nextPos)
@@ -96,9 +107,18 @@ namespace ProjectB.Entities
 			}
 
 			position = nextPos;
+
+			// 이동 후 풀숲체크
+			foreach (var tileObj in tileData)
+			{
+				if (tileObj is IWildEncounter wildEncounter)
+				{
+					wildEncounter.OnTrigger(this);
+				}
+			}
 		}
 
-		void Z(Direction direction, List<string> mapData, List<Entity> entity)
+		void Z(Direction direction)
 		{
 			// TODO : Z 키 인풋
 			this.direction = direction;
@@ -108,7 +128,7 @@ namespace ProjectB.Entities
 			if ((nextPos.x < 0) || (nextPos.x >= mapData[position.y].Length) || (nextPos.y < 0) || (nextPos.y >= mapData.Count))
 				return;
 
-			foreach (var obj in entity)
+			foreach (var obj in entityData)
 			{
 				// 이동할 위치에 오브젝트가 있으면 상호작용
 				if (obj.position == nextPos && obj is IInteract interactable)
@@ -117,15 +137,6 @@ namespace ProjectB.Entities
 					return;
 				}
 			}
-
-			// 필드일때
-			// 배틀중일떄
-			// 인벤토리일떄
-			// 메뉴가 열려있을 때
-			// 대화중일 때
-			// 진화중일 때
-			// 맵보기
-			// 도감
 		}
 
 		void X(Direction direction, List<string> mapData, List<Entity> entity)

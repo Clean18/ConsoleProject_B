@@ -35,6 +35,7 @@ namespace ProjectB.Tiles
 				if (ran < EncounterRate)
 				{
 					// 배틀
+					// 어떻게 랜덤으로 관리하지
 				}
 			}
 		}

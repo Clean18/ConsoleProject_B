@@ -25,8 +25,9 @@ namespace ProjectB
 				switch (key)
 				{
 					case ConsoleKey.D1:
-						Game.sceneTable.Push(Scene.Field);
-						Game.currentMap = Data.Map.Field;
+						Game.sceneTable.Push(Scene.Field);	// 필드씬 전환
+						Game.currentMap = Data.Map.Field;	// 필드맵으로 이동
+						Game.Player.SetCurrentField();		// 현재 맵 데이터 필드에 보관
 						Console.Clear();
 						return;
 
@@ -42,7 +43,7 @@ namespace ProjectB
 			// 출력할 맵, 오브젝트, 플레이어(매개변수)
 			List<string> currentMap = Data.GetMapData(Game.currentMap);
 			List<Entity> currentObjects = Data.GetEntitiesData(Game.currentMap);
-			List<Tile> currentTiles = Data.GetTiles(Game.currentMap);
+			List<Tile> currentTiles = Data.GetTilesData(Game.currentMap);
 
 			// 일정 여백 띄우기
 			// TODO : 일정 여백 띄운 만큼 채우기
