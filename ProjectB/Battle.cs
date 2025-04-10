@@ -57,6 +57,9 @@ namespace ProjectB
 
 		public static void EnemyAction()
 		{
+			// 텍스트 클리어
+			Print.ClearLine(0, 16, 80, 22);
+
 			// 상대 푸키먼이 가진 기술의 타입이
 			// 내 푸키먼의 타입의 상성이면
 			Pokemon? enemyFirst = isTrainer ? enemyParty![0] : enemyPokemon;
@@ -262,7 +265,6 @@ namespace ProjectB
 
 					// ~는(은)  ~를(을) 차례로 꺼냈다
 					Print.PrintBattleText($"{enemyName}는(은) {enemyPokemon.Name}를(을) 차례로 꺼냈다", 2, 1);
-
 					return true;
 				}
 			}

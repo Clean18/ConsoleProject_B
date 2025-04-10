@@ -19,17 +19,16 @@ namespace ProjectB.Skills
 			this.CurPP--;
 
 			// 명중률
-			if (Game.globalRandom.Next(0, 101) > this.Accuracy)
+			if (Game.globalRandom.Next(0, 10) >= this.Accuracy)
 			{
 				// 빗나감
 				string missText = $"그러나 {attacker.Name}의 공격은 빗나갔다!";
-				Print.PrintBattleText(battleText, 2, 2);
+				Print.PrintBattleText(missText, 2, 2);
 			}
 			else
 			{
 				float damageRate = Battle.TypesCalculator(skill.PokeType, defender.PokeType1, defender.PokeType2);
 				string damageText;
-				Print.PrintBattleText(battleText, 2, 2);
 				switch (damageRate)
 				{
 					case 0f: damageText = $"그러나 {defender.Name}에게는 효과가 없었다..."; break;
@@ -42,8 +41,22 @@ namespace ProjectB.Skills
 
 					default: damageText = ""; break;
 				}
+				Print.PrintBattleText(damageText, 2, 2);
 				int totalDamage = Battle.GetTotalDamage(attacker, defender, this);
 				defender.TakeDamage(attacker, totalDamage);
+
+				// 상대가 기절했으면
+				if (defender.IsDead)
+				{
+					// 경험치 증가
+					attacker.GetEXP(defender.BaseExp);
+					// 상대 교체 체크
+					bool isChange = Battle.EnemyPokemonChange();
+					Battle.state = isChange ? BattleState.EnemyTurn : BattleState.Win;
+					return;
+				}
+
+				Battle.state = BattleState.EnemyTurn;
 			}
 		}
 	}

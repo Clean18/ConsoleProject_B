@@ -19,7 +19,7 @@ namespace ProjectB.Skills
 			this.CurPP--;
 
 			// 명중률
-			if (Game.globalRandom.Next(0, 101) > this.Accuracy)
+			if (Game.globalRandom.Next(0, 10) >= this.Accuracy)
 			{
 				// 빗나감
 				string missText = $"그러나 {attacker.Name}의 공격은 빗나갔다!";
