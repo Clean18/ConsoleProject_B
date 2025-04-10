@@ -12,7 +12,7 @@ namespace ProjectB
 	}
 	public static class Data
 	{
-		public static int expRate = 10;
+		public static int expRate = 2;
 
 		private static Dictionary<Map, List<string>>? mapData;
 		private static Dictionary<Map, List<Entity>>? mapEntityData;

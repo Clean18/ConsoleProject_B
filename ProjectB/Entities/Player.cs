@@ -49,12 +49,6 @@ namespace ProjectB.Entities
 
 		public void KeyHandler(ConsoleKey key)
 		{
-			// TODO : 씬에 따른 방향조절
-			// 필드일때 > 이동
-			// 배틀중일 떄 > 메뉴 이동
-			// 인벤토리일때 > 메뉴 이동
-			// 메뉴가 열려있을 떄 > 메뉴이동
-
 			switch (Game.sceneTable.Peek())
 			{
 				// 우선 필드만
@@ -122,7 +116,6 @@ namespace ProjectB.Entities
 
 		void Z(Direction direction)
 		{
-			// TODO : Z 키 인풋
 			this.direction = direction;
 			Position nextPos = position + direction;
 
@@ -151,16 +144,15 @@ namespace ProjectB.Entities
 			// 필드일떄만 메뉴활성화
 			if (Game.sceneTable.Peek() == Scene.Field)
 			{
-				// TODO : 메뉴 활성화
 				Game.sceneTable.Push(Scene.Menu);
 			}
 		}
 		public void AddPokemon(Pokemon pokemon)
 		{
+			// TODO : 가진 푸키먼이 6마리 초과면 박스로 보냄
 			if (Party.Count >= 6)
 				return;
 
-			// TODO : 박스로
 			Party.Add(pokemon);
 
 			Print.PrintBattleText($" {pokemon.Name} 을/를 얻었습니다.\n  파티에 추가됩니다.", 1, 1);

@@ -143,6 +143,9 @@ namespace ProjectB
 			if (this.Hp > this.MaxHp)
 				this.Hp = this.MaxHp;
 
+			// 배틀씬에서 출력
+			Print.PrintMyPokemon(this);
+
 			// 레벨업 메시지 출력
 			string levelupText = $"{this.Name}의 레벨이 올랐다!";
 			Print.PrintBattleText(levelupText, 2, 1);
@@ -208,7 +211,6 @@ namespace ProjectB
 			while (this.CurExp >= this.NextExp)
 			{
 				this.CurExp -= this.NextExp;			// 경험치 차감
-				Print.PrintMyPokemon(this);				// 갱신
 				this.Levelup();							// 레벨업 실행
 				this.NextExp = GetNextEXP(this.Level);  // 다음 필요경험치 변경
 			}

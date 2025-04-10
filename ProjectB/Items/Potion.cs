@@ -10,6 +10,9 @@ namespace ProjectB.Items
 
 		public override void Use(Pokemon pokemon)
 		{
+			if (this.CurCount <= 0)
+				return;
+
 			bool isUsed = pokemon.PokemonHeal(20);
 
 			if (Game.sceneTable.Peek() == Scene.Inventory)
@@ -27,6 +30,8 @@ namespace ProjectB.Items
 				{
 					// 사용을 못했을 떄
 					Console.WriteLine(" 체력이 가득차있어 사용할 수 없다!");
+					Console.WriteLine("                                     ");
+					Console.WriteLine("                                     ");
 				}
 			}
 			else if (Game.sceneTable.Peek() == Scene.Battle && Battle.state == BattleState.PlayerTurn)
@@ -35,10 +40,14 @@ namespace ProjectB.Items
 				{
 					this.CurCount--;    // 아이템 개수 감소
 					Game.Player.InventoryUpdate();  // 인벤토리 업데이트
-													// 배틀이고 내턴일 때
+
+					// 배틀이고 내턴일 때
 					Print.PrintMyPokemon(pokemon);
 					int count = Game.Player.Party.Count;
 					Print.PrintBattleText($" {this.Name}를(을) 사용했다! \n {pokemon.Name}이(가) {20} 회복했다!", 2, 1);
+					// 아이템 사용으로 턴 넘기기
+					Battle.state = BattleState.EnemyTurn;
+					return;
 				}
 				else if (!isUsed)
 				{

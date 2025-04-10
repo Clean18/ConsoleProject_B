@@ -484,6 +484,10 @@ namespace ProjectB
 						Console.WriteLine($"타입/    {pokemon.PokeType1}");
 						Console.SetCursorPosition(startX, line++);
 						Console.WriteLine($"         {(pokemon.PokeType2 == PokeType.None ? "" : pokemon.PokeType2)}");
+						Console.SetCursorPosition(startX, line++);
+						Console.WriteLine($"현재 경험치 {pokemon.CurExp, 6}");
+						Console.SetCursorPosition(startX, line++);
+						Console.WriteLine($"레벨업까지  {pokemon.NextExp, 6}");
 						break;
 
 					case 2:
@@ -776,7 +780,6 @@ namespace ProjectB
 
 		public static void PrintInventory(Player player)
 		{
-			// TODO : 인벤토리 출력
 			ItemType currentPage = ItemType.Item;
 			int selectIndex = 0;
 
@@ -950,7 +953,6 @@ namespace ProjectB
 			Console.Write($"{pokemon.Hp,3} / {pokemon.MaxHp,3}   ┃");
 			Console.SetCursorPosition(startX, startY + line + 3);
 			Console.WriteLine("◀━━━━━━━━━━━━━━━━━┛");
-			// 다음줄은 y12
 			return startY + line + 4;
 		}
 
@@ -964,7 +966,6 @@ namespace ProjectB
 
 		public static void PrintBattle(Player player)
 		{
-			// TODO : 배틀
 			//ClearLine(0, battleStartY + 1, 50, 2);
 			ClearBattleText();
 
@@ -976,9 +977,9 @@ namespace ProjectB
 			switch (Battle.state)
 			{
 				case BattleState.Intro:
-					Battle.state = BattleState.PlayerTurn;
+					//Battle.state = BattleState.PlayerTurn;
 					//Battle.state = BattleState.EnemyTurn;
-					//Battle.state = BattleState.SpeedCheck;
+					Battle.state = BattleState.SpeedCheck;
 					break;
 				case BattleState.SpeedCheck:
 					Battle.SpeedCheck();
@@ -999,6 +1000,7 @@ namespace ProjectB
 					break;
 
 				case BattleState.PlayerInventory:
+					PrintBattleInventory();
 					break;
 
 				case BattleState.PlayerPokemon:
@@ -1028,6 +1030,9 @@ namespace ProjectB
 			int menuIndex = 1;
 			while (Battle.state == BattleState.PlayerTurn)
 			{
+				PrintEnemyPokemon(Battle.enemyPokemon!);
+				PrintMyPokemon(Battle.myPokemon!);
+
 				PrintBattleTextOutLine();
 				Console.SetCursorPosition(1, battleStartY + 4); // battleStartY = 12
 				Console.WriteLine("┏━━━━━━━━━━━━━━━━━━━━━━━━━━┓");
@@ -1318,6 +1323,100 @@ namespace ProjectB
 					case ConsoleKey.Escape:
 						Console.Clear();
 						return;
+				}
+			}
+		}
+
+		public static void PrintBattleInventory()
+		{
+			ItemType currentPage = ItemType.Item;
+			int selectIndex = 0;
+
+			// 배경 검은색 포켓은 흰색글자 아이템은 마젠타글자
+			// "  ◀ ▶ POCKET    ▲ ▼ ITEMS  "
+			// "ItemType
+			// "━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+
+			int startX = 29;
+			ClearLine(startX, inventoryPos.y, 90, 25);
+			while (Battle.state == BattleState.PlayerInventory)
+			{
+				Console.SetCursorPosition(startX, inventoryPos.y);
+				Console.BackgroundColor = ConsoleColor.White;
+				Console.ForegroundColor = ConsoleColor.Black;
+				Console.Write("  ◀ ▶ POCKET    ");
+				Console.ForegroundColor = ConsoleColor.Magenta;
+				Console.Write("▲ ▼ ITEMS  ");
+				Console.ResetColor();
+				Console.SetCursorPosition(startX, inventoryPos.y + 1);
+				Console.WriteLine($"[{currentPage}]            ");
+				Console.SetCursorPosition(startX, inventoryPos.y + 2);
+				Console.WriteLine("━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+
+				// 아이템 정보 출력
+				var invenData = Game.Player.Inventory[currentPage];
+				Console.SetCursorPosition(startX, inventoryPos.y + 3);
+				ClearLine(startX, inventoryPos.y + 3, 20, 15);
+				for (int i = 0; i < invenData.Count; i++)
+				{
+					Console.WriteLine($"{(i == selectIndex ? "[▶]" : "[ ]")} {invenData[i].Name} x {invenData[i].CurCount}");
+				}
+				Console.SetCursorPosition(startX, inventoryPos.y + 3 + invenData.Count);
+				Console.WriteLine((selectIndex == invenData.Count ? "[▶] 나가기" : "[ ] 나가기")); //$" 나가기"
+
+				// 키입력 방지
+				ClearInput();
+				ConsoleKey invenKey = Console.ReadKey(true).Key;
+
+				switch (invenKey)
+				{
+					case ConsoleKey.UpArrow:
+						selectIndex--;
+						if (selectIndex < 0)
+							selectIndex = invenData.Count;
+						break;
+					case ConsoleKey.LeftArrow:
+						selectIndex = 0;
+						if (currentPage == ItemType.Item) currentPage = ItemType.TMHM;
+						else if (currentPage == ItemType.Ball) currentPage = ItemType.Item;
+						else if (currentPage == ItemType.KeyItem) currentPage = ItemType.Ball;
+						else if (currentPage == ItemType.TMHM) currentPage = ItemType.KeyItem;
+						break;
+
+					case ConsoleKey.DownArrow:
+						selectIndex++;
+						if (selectIndex > invenData.Count)
+							selectIndex = 0;
+						break;
+					case ConsoleKey.RightArrow:
+						selectIndex = 0;
+						if (currentPage == ItemType.Item) currentPage = ItemType.Ball;
+						else if (currentPage == ItemType.Ball) currentPage = ItemType.KeyItem;
+						else if (currentPage == ItemType.KeyItem) currentPage = ItemType.TMHM;
+						else if (currentPage == ItemType.TMHM) currentPage = ItemType.Item;
+						break;
+
+					case ConsoleKey.Z:
+						if (selectIndex == invenData.Count)
+						{
+							// 나가기
+							Battle.state = BattleState.PlayerTurn;
+							ClearLine(startX, inventoryPos.y, 90, 25);
+						}
+						else
+						{
+							Item item = invenData[selectIndex];
+							PrintItemUseParty(item);
+							Console.Clear();
+							return;
+						}
+						break;
+
+					case ConsoleKey.X:
+						Battle.state = BattleState.PlayerTurn;
+						ClearLine(startX, inventoryPos.y, 90, 25);
+						break;
+
 				}
 			}
 		}
