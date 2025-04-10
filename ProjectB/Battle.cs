@@ -294,5 +294,12 @@ namespace ProjectB
 			// 남은 푸키먼없음
 			return false;
 		}
+
+		public static void EndBattle()
+		{
+			Battle.state = BattleState.Intro;
+			Game.sceneTable.Pop();
+			Console.Clear();
+		}
 	}
 }

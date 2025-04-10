@@ -403,6 +403,9 @@ namespace ProjectB
 
 			int barSize = 10;
 			int filled = (int)(((float)pokemon.Hp / pokemon.MaxHp) * barSize);
+			// 1이라도 있으면 1칸이라도 채우기
+			if (filled == 0 && pokemon.Hp > 0)
+				filled = 1;
 			int empty = barSize - filled;
 
 			Console.Write("[");
@@ -815,13 +818,10 @@ namespace ProjectB
 			Pokemon enemyPoke = Battle.enemyPokemon!;
 			PrintEnemyPokemon(enemyPoke);
 
-			PrintBattleTextLine(); // =======
+			PrintBattleTextOutLine(); // =======
 			
 			string text = $"앗! 야생의 {Battle.enemyPokemon!.Name} 이(가) 튀어나왔다!\n 가랏! {myPoke.Name}";
 			PrintBattleText(text, 2, 1);
-
-			//string text2 = $"가랏! {myPoke.Name}!";
-			//PrintBattleText(text2, 2, 1);
 
 			// 내 푸키먼 출력
 			int nextLine = PrintMyPokemon(myPoke);
@@ -917,6 +917,7 @@ namespace ProjectB
 					break;
 
 				case BattleState.PlayerRun:
+					PrintPlayerRun();
 					break;
 
 				case BattleState.PokemonChange:
@@ -924,16 +925,12 @@ namespace ProjectB
 
 				case BattleState.Win:
 					// TODO : 승리시
-					Battle.state = BattleState.Intro;
-					Game.sceneTable.Pop();
-					Console.Clear();
+					Battle.EndBattle();
 					break;
 
 				case BattleState.Lose:
 					// TODO : 패배시
-					Battle.state = BattleState.Intro;
-					Game.sceneTable.Pop();
-					Console.Clear();
+					Battle.EndBattle();
 					break;
 			}
 		}
@@ -943,7 +940,7 @@ namespace ProjectB
 			int menuIndex = 1;
 			while (Battle.state == BattleState.PlayerTurn)
 			{
-				PrintBattleTextLine();
+				PrintBattleTextOutLine();
 				Console.SetCursorPosition(1, battleStartY + 4); // battleStartY = 12
 				Console.WriteLine("┏━━━━━━━━━━━━━━━━━━━━━━━━━━┓");
 				Console.SetCursorPosition(1, battleStartY + 5);
@@ -1128,7 +1125,7 @@ namespace ProjectB
 			}
 		}
 
-		static void PrintBattleTextLine()
+		static void PrintBattleTextOutLine()
 		{
 			Console.SetCursorPosition(1, battleStartY + 0);
 			Console.WriteLine("===========================");
@@ -1145,6 +1142,26 @@ namespace ProjectB
 		{
 			while (Console.KeyAvailable)
 				Console.ReadKey(true);
+		}
+
+		static void PrintPlayerRun()
+		{
+			// 먼저 무조건 도망가게
+			while (Battle.state == BattleState.PlayerRun)
+			{
+				if (Battle.isTrainer)
+				{
+					// 트레이너면 도망 못감
+					PrintBattleText(" 도망칠 수 없다!", 2, 1);
+					Battle.state = BattleState.PlayerTurn;
+				}
+				else
+				{
+					// 야생이면 무조건 도망
+					PrintBattleText(" 성공적으로 도망쳤다!", 2, 1);
+					Battle.EndBattle();
+				}
+			}
 		}
 	}
 }
