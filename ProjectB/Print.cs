@@ -860,7 +860,7 @@ namespace ProjectB
 		public static void PrintBattle(Player player)
 		{
 			// TODO : 배틀
-			ClearLine(0, battleStartY - 0, 50, 2); // 내 푸키먼 체력바 아래로 2칸 지우기
+			ClearLine(0, battleStartY + 0, 50, 2); // 내 푸키먼 체력바 아래로 2칸 지우기
 
 			//string text1 = "┏━━━━━━━━━━━━━━━━━━━━━━━━━━┓";
 			//string text2 = "┃ [▶] 싸우다  [▶] 가방     ┃";
@@ -1012,10 +1012,14 @@ namespace ProjectB
 
 			while (Battle.state == BattleState.PlayerSkill)
 			{
+				Console.SetCursorPosition(1, battleStartY + 0);
+				Console.WriteLine("===========================");
 				Console.SetCursorPosition(1, battleStartY + 1);
 				Console.WriteLine($" [{(skillIndex == 0 ? "▶" : " ")}] {skillNames[0],-5}  [{(skillIndex == 1 ? "▶" : " ")}] {skillNames[1],-5}");
 				Console.SetCursorPosition(1, battleStartY + 2);
 				Console.WriteLine($" [{(skillIndex == 2 ? "▶" : " ")}] {skillNames[2],-5}  [{(skillIndex == 3 ? "▶" : " ")}] {skillNames[3],-5}");
+				Console.SetCursorPosition(1, battleStartY + 3);
+				Console.WriteLine("===========================");
 
 				ConsoleKey key = Console.ReadKey(true).Key;
 
