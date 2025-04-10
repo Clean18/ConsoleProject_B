@@ -385,6 +385,16 @@ namespace ProjectB
 
 		static void PrintHpBar(Pokemon pokemon, bool addLine)
 		{
+			// 체력이 음수가 되면 터짐
+			if (pokemon.Hp <= 0)
+			{
+				Console.ForegroundColor = ConsoleColor.White;
+				Console.Write("[□□□□□□□□□□]");
+				Console.ResetColor();
+				if (addLine) Console.WriteLine();
+				return;
+			}
+
 			int barSize = 10;
 			int filled = (int)(((float)pokemon.Hp / pokemon.MaxHp) * barSize);
 			int empty = barSize - filled;
@@ -392,8 +402,8 @@ namespace ProjectB
 			Console.Write("[");
 			Console.ForegroundColor = GetHpBarColor(pokemon);
 			Console.Write(new string('■', filled));
-			Console.ForegroundColor = ConsoleColor.Gray;
-			Console.Write(new string(' ', empty));
+			Console.ForegroundColor = ConsoleColor.White;
+			Console.Write(new string('□', empty));
 			Console.ResetColor();
 			Console.Write("]");
 			if (addLine) Console.WriteLine();
@@ -541,15 +551,15 @@ namespace ProjectB
 			}
 		}
 
-		public static void ClearLine(int x, int y, int width, int height)
+		public static void ClearLine(int startX, int startY, int width, int height)
 		{
-			Console.SetCursorPosition(x, y);
+			Console.SetCursorPosition(startX, startY);
 			for (int i = 0; i < height; i++)
 			{
-				Console.SetCursorPosition(x, y + i);
+				Console.SetCursorPosition(startX, startY + i);
 				Console.Write(new string(' ', width));
 			}
-			Console.SetCursorPosition(x, y);
+			Console.SetCursorPosition(startX, startY);
 		}
 
 		static void PrintPokemonHasSkill(int partyIndex, int startX, int startY)
@@ -903,6 +913,9 @@ namespace ProjectB
 					break;
 
 				case BattleState.Win:
+					// TODO : 승리시
+					Battle.state = BattleState.Intro;
+					Game.sceneTable.Pop();
 					break;
 
 				case BattleState.Lose:
@@ -989,7 +1002,6 @@ namespace ProjectB
 		{
 			int y = line == 2 ? 14 : 13;
 			Console.SetCursorPosition(1, y);
-			//Console.WriteLine(text);
 			foreach (var c in text)
 			{
 				Console.Write(c);

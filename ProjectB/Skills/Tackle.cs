@@ -33,6 +33,7 @@ namespace ProjectB.Skills
 				{
 					case 0f: damageText = $"그러나 {defender.Name}에게는 효과가 없었다..."; break;
 
+					case 0.25f:
 					case 0.5f: damageText = $"효과는 조금 부족한 듯 하다"; break;
 
 					case 2f: damageText = $"효과는 뛰어났다!"; break;

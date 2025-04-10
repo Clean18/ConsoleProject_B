@@ -134,7 +134,6 @@ namespace ProjectB
 
 		static void Update(ConsoleKey input)
 		{
-			
 			player!.KeyHandler(input);
 		}
 

@@ -58,7 +58,7 @@ namespace ProjectB
 		public static void EnemyAction()
 		{
 			// 텍스트 클리어
-			Print.ClearLine(0, 16, 80, 22);
+			Print.ClearLine(1, 16, 80, 7); //여기서 싹지우네
 
 			// 상대 푸키먼이 가진 기술의 타입이
 			// 내 푸키먼의 타입의 상성이면
