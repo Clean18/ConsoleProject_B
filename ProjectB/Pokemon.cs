@@ -136,7 +136,7 @@ namespace ProjectB
 			this.PokemonStat = GetStat(); // 스탯 재할당
 
 			// 체력은 레벨업 전 체력에서 레벨업 후 상승한 체력만큼만 증가
-			int newHp = oldMaxHp - this.MaxHp;
+			int newHp = this.MaxHp - oldMaxHp; //절대값써도될듯
 			this.Hp += newHp;
 
 			// 증가한 체력이 최대체력 안넘게
