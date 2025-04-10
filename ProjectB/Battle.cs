@@ -97,7 +97,7 @@ namespace ProjectB
 				// 기술 포인트가 없어지면 나오는 기술. 자신도 조금 데미지를 입는다
 			}
 
-			strongSkill.UseSkill(enemyFirst, myFirst, strongSkill, true);
+			strongSkill.UseSkill(enemyFirst, myFirst, strongSkill, false);
 			
 
 			//int realDamage = GetTotalDamage(enemyFirst, myFirst, strongSkill);

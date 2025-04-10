@@ -32,9 +32,9 @@
 				CurPP = curPP;
 		}
 
-		public void UseSkill(Pokemon attacker, Pokemon defender, Skill skill, bool isEnemy)
+		public void UseSkill(Pokemon attacker, Pokemon defender, Skill skill, bool isDefenderEnemy)
 		{
-			string battleText = isEnemy ? $" 적의 {attacker.Name}의 {this.Name}~" : $" {attacker.Name}의 {this.Name} 공격!";
+			string battleText = isDefenderEnemy ? $" {attacker.Name}의 {this.Name} 공격!" : $" 적의 {attacker.Name}의 {this.Name}~";
 			Print.PrintBattleText(battleText, 2, 1);
 
 			this.CurPP--;
@@ -50,28 +50,33 @@
 			{
 				// 대미지 계산
 				float damageRate = Battle.TypesCalculator(skill.PokeType, defender.PokeType1, defender.PokeType2);
-				string damageText = Data.GetDamageText(damageRate);
 
 				// 대미지 처리
 				int totalDamage = Battle.GetTotalDamage(attacker, defender, this);
 				defender.TakeDamage(attacker, totalDamage);
 
 				// 배틀텍스트 출력
+				string damageText = Data.GetDamageText(damageRate);
 				if (damageRate == 0f) // "그러나 {0}에게는 효과가 없었다..." 보간처리
-					Print.PrintBattleText(string.Format(damageText, defender.Name), 2, 2);
+					Print.PrintBattleText(string.Format(damageText, defender.Name), 2, 1);
 				else if (damageRate != 1f)
-					Print.PrintBattleText(damageText, 2, 2);
+					Print.PrintBattleText(damageText, 2, 1);
 
 				// 기절 처리
 				if (defender.IsDead)
 				{
-					if (isEnemy) // 상대
+					// 배틀중이면 교체씬으로
+					string text = isDefenderEnemy ? $" 적의 {defender.Name}는(은) 쓰러졌다!" : $"{defender.Name}는(은) 쓰러졌다!";
+					Print.PrintBattleText(text, 2, 1);
+
+					if (isDefenderEnemy) // 상대
 					{
 						// 상대 푸키먼이 기절했으면
 						// 경험치 증가 / 배율
 						attacker.GetEXP(defender.BaseExp * Data.expRate);
 						bool isChange = Battle.EnemyPokemonChange();
 						Battle.state = isChange ? BattleState.PlayerTurn : BattleState.Win;
+						return;
 					}
 					else // 나
 					{
@@ -83,10 +88,8 @@
 						return;
 					}
 				}
-				else
-				{
-					Battle.state = isEnemy ? BattleState.PlayerTurn : BattleState.EnemyTurn;
-				}
+				// 공격 끝나면 턴 바꾸기
+				Battle.state = isDefenderEnemy ? BattleState.EnemyTurn : BattleState.PlayerTurn;
 			}
 		}
 	}

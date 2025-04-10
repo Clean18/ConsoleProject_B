@@ -107,7 +107,6 @@ namespace ProjectB
 
 		private int GetNextEXP(int level)
 		{
-			// TODO : 경험치 테이블
 			if (0 <= level && level < 20) // 1 ~ 19
 				return level * level * 2;
 			else if (20 <= level && level < 40) // 20 ~ 39
@@ -135,7 +134,6 @@ namespace ProjectB
 			int oldMaxHp = this.MaxHp; // 레벨업 전 최대체력
 
 			this.PokemonStat = GetStat(); // 스탯 재할당
-			NextExp = GetNextEXP(this.Level); // 다음 필요경험치 변경
 
 			// 체력은 레벨업 전 체력에서 레벨업 후 상승한 체력만큼만 증가
 			int newHp = oldMaxHp - this.MaxHp;
@@ -149,7 +147,7 @@ namespace ProjectB
 			string levelupText = $"{this.Name}의 레벨이 올랐다!";
 			Print.PrintBattleText(levelupText, 2, 1);
 
-			string statText = $"체력/ {this.PokemonStat.hp} 공격/ {this.PokemonStat.attack} 방어/ {this.PokemonStat.defense} 특공/ {this.PokemonStat.speAttack} 특방/ {this.PokemonStat.speDefense} 스피드/ {this.PokemonStat.speed}";
+			string statText = $" 체력/ {this.PokemonStat.hp} 공격/ {this.PokemonStat.attack} 방어/ {this.PokemonStat.defense}\n  특공/ {this.PokemonStat.speAttack} 특방/ {this.PokemonStat.speDefense} 스피드/ {this.PokemonStat.speed}";
 			Print.PrintBattleText(statText, 2, 1);
 		}
 
@@ -198,9 +196,6 @@ namespace ProjectB
 			{
 				this.Hp = 0;
 				this.IsDead = true;
-				// 배틀중이면 교체씬으로
-				string text = $"{this.Name}는(은) 쓰러졌다!";
-				Print.PrintBattleText(text, 2, 1);
 			}
 		}
 
@@ -208,12 +203,15 @@ namespace ProjectB
 		{
 			string expText = $"{this.Name}는(은) {exp} 경험치를 얻었다!";
 			Print.PrintBattleText(expText, 2, 1);
+
 			this.CurExp += exp;
 			// 레벨업 반복
 			while (this.CurExp >= this.NextExp)
 			{
-				this.CurExp -= this.NextExp;
-				this.Levelup(); // 레벨업 이벤트 실행
+				this.CurExp -= this.NextExp;			// 경험치 차감
+				this.Levelup();							// 레벨업 실행
+				this.NextExp = GetNextEXP(this.Level);  // 다음 필요경험치 변경
+				Print.PrintMyPokemon(this);				// 갱신
 			}
 		}
 	}

@@ -1080,13 +1080,12 @@ namespace ProjectB
 							if (skill.CurPP > 0)
 							{
 								// 공격
-								skill.UseSkill(Battle.myPokemon!, Battle.enemyPokemon!, skill, false);
+								skill.UseSkill(Battle.myPokemon!, Battle.enemyPokemon!, skill, true);
 								// 상대 기절 체크
 								// if 기절
 								// 내 경험치 상승
 								// if 레벨업 스탯 증가
 								// 끝내기
-								Thread.Sleep(2000);
 							}
 						}
 						break;
