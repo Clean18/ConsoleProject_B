@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace ProjectB
 {
@@ -69,8 +70,7 @@ namespace ProjectB
 
 		public bool IsDead { get; set; }
 
-		public delegate void LevelupEvent(Pokemon pokemon);
-		public event LevelupEvent? OnLevelup;
+		public int BaseExp => (BaseStat.hp + BaseStat.attack + BaseStat.defense + BaseStat.speAttack + BaseStat.speDefense + BaseStat.speed) / 6; // 종족값 평균
 
 		public Pokemon(int id, string name, int level, BaseStat baseStat, IV iv, PokeType type1, PokeType type2)
 		{
@@ -127,7 +127,6 @@ namespace ProjectB
 			this.PokemonStat = GetStat(); // 스탯 재할당
 			NextExp = GetNextEXP(this.Level); // 다음 필요경험치 변경
 
-
 			// 체력은 레벨업 전 체력에서 레벨업 후 상승한 체력만큼만 증가
 			int newHp = oldMaxHp - this.MaxHp;
 
@@ -136,7 +135,12 @@ namespace ProjectB
 			if (this.Hp > this.MaxHp)
 				this.Hp = this.MaxHp;
 
-			OnLevelup?.Invoke(this);
+			// 레벨업 메시지 출력
+			string levelupText = $"{this.Name}의 레벨이 올랐다!";
+			Print.PrintBattleText(levelupText, 2, 1);
+
+			string statText = $"체력/ {this.PokemonStat.hp} 공격/ {this.PokemonStat.attack} 방어/ {this.PokemonStat.defense} 특공/ {this.PokemonStat.speAttack} 특방/ {this.PokemonStat.speDefense} 스피드/ {this.PokemonStat.speed}";
+			Print.PrintBattleText(statText, 2, 1);
 		}
 
 		// 기술 4개 보관
@@ -173,18 +177,33 @@ namespace ProjectB
 			this.Hp -= damage;
 
 			// 푸키먼 체력 갱신
-			Print.PrintMyPokemon(this);
+			// 내 푸키먼인지 아닌지 골라야되네
+			if (this == Battle.myPokemon)
+				Print.PrintMyPokemon(this);
+			else if (this == Battle.enemyPokemon)
+				Print.PrintEnemyPokemon(this);
 			Thread.Sleep(2000);
+
 			if (this.Hp <= 0)
 			{
 				this.Hp = 0;
 				this.IsDead = true;
 				// 배틀중이면 교체씬으로
-				Console.SetCursorPosition(1, 13);
-				Console.WriteLine($"{this.Name}는(은) 쓰러졌다!");
-				Thread.Sleep(2000);
-				Console.SetCursorPosition(1, 13);
-				Print.ClearLine(0, 1, 80, 1);
+				string text = $"{this.Name}는(은) 쓰러졌다!";
+				Print.PrintBattleText(text, 2, 1);
+			}
+		}
+
+		public void GetEXP(int exp)
+		{
+			string expText = $"{this.Name}는(은) {exp} 경험치를 얻었다!";
+			Print.PrintBattleText(expText, 2, 1);
+			this.CurExp += exp;
+			// 레벨업 반복
+			while (this.CurExp >= this.NextExp)
+			{
+				this.CurExp -= this.NextExp;
+				this.Levelup(); // 레벨업 이벤트 실행
 			}
 		}
 	}

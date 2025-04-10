@@ -162,10 +162,6 @@ namespace ProjectB.Entities
 
 			// TODO : 박스로
 			Party.Add(pokemon);
-			pokemon.OnLevelup += (pokemon) =>
-			{
-				// 레벨업
-			};
 
 			Console.SetCursorPosition(0, this.vision * 2 + 5);
 			Console.WriteLine($"{pokemon.Name} 을/를 얻었습니다.\n파티에 추가됩니다.");

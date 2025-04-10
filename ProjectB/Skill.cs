@@ -38,6 +38,6 @@ namespace ProjectB
 				CurPP = curPP;
 		}
 
-		public abstract void Use();
+		public abstract void Use(Pokemon attacker, Pokemon defender, Skill skill);
 	}
 }

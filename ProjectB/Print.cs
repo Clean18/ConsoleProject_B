@@ -860,7 +860,8 @@ namespace ProjectB
 		public static void PrintBattle(Player player)
 		{
 			// TODO : 배틀
-			ClearLine(0, battleStartY + 1, 50, 2); // 내 푸키먼 체력바 아래로 2칸 지우기
+			//ClearLine(0, battleStartY + 1, 50, 2);
+			ClearBattleText();
 
 			//string text1 = "┏━━━━━━━━━━━━━━━━━━━━━━━━━━┓";
 			//string text2 = "┃ [▶] 싸우다  [▶] 가방     ┃";
@@ -988,10 +989,15 @@ namespace ProjectB
 		{
 			int y = line == 2 ? 14 : 13;
 			Console.SetCursorPosition(1, y);
-			Console.WriteLine(text);
+			//Console.WriteLine(text);
+			foreach (var c in text)
+			{
+				Console.Write(c);
+				Thread.Sleep(100);
+			}
 			Thread.Sleep(wait * 1000);
 			Console.SetCursorPosition(1, y);
-			Print.ClearLine(0, line, 100, line);
+			ClearBattleText();
 		}
 
 		static void PrintPlayerBattle()
@@ -1051,9 +1057,23 @@ namespace ProjectB
 						break;
 
 					case ConsoleKey.Z:
-						if (0 <= skillIndex && skillIndex > pokemon.Skills.Count)
+						if (0 <= skillIndex && skillIndex < pokemon.Skills.Count)
 						{
-							// 선택한 기술 설명 출력
+							// 기술 사용
+							// 임시로 전부 공격
+							ClearBattleText();
+							var skill = pokemon.Skills[skillIndex];
+							if (skill.CurPP > 0)
+							{
+								// 공격
+								skill.Use(Battle.myPokemon!, Battle.enemyPokemon!, skill);
+								// 상대 기절 체크
+								// if 기절
+								// 내 경험치 상승
+								// if 레벨업 스탯 증가
+								// 끝내기
+								Thread.Sleep(2000);
+							}
 						}
 						break;
 
@@ -1064,6 +1084,8 @@ namespace ProjectB
 						break;
 				}
 
+				// 현재 커서▶가 있는 기술 정보 출력
+				ClearBattleText();
 				if (0 <= skillIndex && skillIndex < pokemon.Skills.Count)
 				{
 					var skill = pokemon.Skills[skillIndex];
@@ -1071,10 +1093,6 @@ namespace ProjectB
 					Console.WriteLine($"{skill.Name}/ 타입/ {skill.PokeType} {(skill.SkillType == SkillType.Physical ? "물리" : "특수")}");
 					Console.SetCursorPosition(1, battleStartY + 2); //14
 					Console.WriteLine($"위력/ {skill.Damage} PP/ {skill.CurPP}/{skill.MaxPP}");
-				}
-				else
-				{
-					ClearLine(1, 13, 100, 2);
 				}
 			}
 		}
@@ -1085,6 +1103,11 @@ namespace ProjectB
 			Console.WriteLine("===========================");
 			Console.SetCursorPosition(1, battleStartY + 3);
 			Console.WriteLine("===========================");
+		}
+
+		static void ClearBattleText()
+		{
+			ClearLine(1, 13, 100, 2);
 		}
 	}
 }

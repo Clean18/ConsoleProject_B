@@ -226,23 +226,49 @@ namespace ProjectB
 			int attackStat = isSpecial ? attacker.PokemonStat.speAttack : attacker.PokemonStat.attack;
 			int defenseStat = isSpecial ? defender.PokemonStat.speDefense : defender.PokemonStat.defense;
 
-			float modifier = 1f;
+			float damageRate = 1f;
 
 			// 자속 체크
 			if (skill.PokeType == attacker.PokeType1 || skill.PokeType == attacker.PokeType2)
-				modifier *= 1.5f;
+				damageRate *= 1.5f;
 
 			// 타입 체크
-			modifier *= TypesCalculator(skill.PokeType, defender.PokeType1, defender.PokeType2);
+			damageRate *= TypesCalculator(skill.PokeType, defender.PokeType1, defender.PokeType2);
 
 			// 랜덤 난수 0.85 ~ 1
-			modifier *= Game.globalRandom.Next(85, 101) / 100f;
+			damageRate *= Game.globalRandom.Next(85, 101) / 100f;
 
 			// 데미지 계산 공식
-			float damage = (((((2f * level) / 5 + 2) * power * attackStat / defenseStat) / 50) + 2) * modifier;
+			float damage = (((((2f * level) / 5 + 2) * power * attackStat / defenseStat) / 50) + 2) * damageRate;
 
 			// 최소 대미지 1
 			return Math.Max(1, (int)damage);
+		}
+
+		public static bool EnemyPokemonChange()
+		{
+			// 상대 기절시 푸키먼 교체
+
+			// 야생이면 바로 끝
+			if (!isTrainer)
+				return false;
+
+			// 살아있는 푸키먼 체크
+			foreach (var poke in enemyParty!)
+			{
+				if (!poke.IsDead && poke.Hp > 0)
+				{
+					enemyPokemon = poke;
+
+					// ~는(은)  ~를(을) 차례로 꺼냈다
+					Print.PrintBattleText($"{enemyName}는(은) {enemyPokemon.Name}를(을) 차례로 꺼냈다", 2, 1);
+
+					return true;
+				}
+			}
+
+			// 남은 푸키먼없음
+			return false;
 		}
 	}
 }
