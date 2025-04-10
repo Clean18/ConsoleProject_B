@@ -163,8 +163,8 @@ namespace ProjectB.Entities
 			// TODO : 박스로
 			Party.Add(pokemon);
 
-			Console.SetCursorPosition(0, this.vision * 2 + 5);
-			Console.WriteLine($"{pokemon.Name} 을/를 얻었습니다.\n파티에 추가됩니다.");
+			Print.PrintBattleText($" {pokemon.Name} 을/를 얻었습니다.\n  파티에 추가됩니다.", 1, 1);
+			Print.ClearInput();
 		}
 
 		public void AddItem(Item item)
@@ -184,17 +184,17 @@ namespace ProjectB.Entities
 					if (hasItem.CurCount > hasItem.MaxCount)
 						hasItem.CurCount = hasItem.MaxCount;
 
-					Console.SetCursorPosition(0, this.vision * 2 + 5);
-					Console.WriteLine($"{item.Name} 을/를 {item.CurCount} 개 얻었습니다. ({hasItem.CurCount}개)");
-
+					Print.PrintBattleText($" {item.Name} 을/를 {item.CurCount} 개 얻었습니다. ({hasItem.CurCount}개)", 1, 1);
+					Print.ClearInput();
 					return;
 				}
 			}
 
 			// 없으면 새로 추가
-			Console.SetCursorPosition(0, this.vision * 2 + 5);
-			Console.WriteLine($"{item.Name} 을/를 {item.CurCount} 개 얻었습니다.");
 			inven.Add(item);
+
+			Print.PrintBattleText($" {item.Name} 을/를 {item.CurCount} 개 얻었습니다.", 1, 1);
+			Print.ClearInput();
 		}
 
 		public Pokemon MyFirstPoke()

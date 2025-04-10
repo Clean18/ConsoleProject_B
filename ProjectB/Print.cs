@@ -169,6 +169,8 @@ namespace ProjectB
 				Console.SetCursorPosition(menuX, menuY + 11); Console.WriteLine("  Z:선택  X:취소");
 				Console.SetCursorPosition(menuX, menuY + 12);
 
+				// 키입력 방지
+				ClearInput();
 				ConsoleKey key = Console.ReadKey(true).Key;
 				switch (key)
 				{
@@ -250,6 +252,8 @@ namespace ProjectB
 				//Console.SetCursorPosition(startX, startY + party.Count + 3);
 				//Console.WriteLine("  Z:선택   X:취소  ");
 
+				// 키입력 방지
+				ClearInput();
 				ConsoleKey partyKey = Console.ReadKey(true).Key;
 
 				switch (partyKey)
@@ -314,6 +318,8 @@ namespace ProjectB
 				Console.SetCursorPosition(startX, startY + party.Count + 6);
 				Console.WriteLine(partyMenuIndex == 4 ? "[▶]  취소      " : "[ ]  취소      ");
 
+				// 키입력 방지
+				ClearInput();
 				ConsoleKey partyMenuKey = Console.ReadKey(true).Key;
 
 				switch (partyMenuKey)
@@ -524,6 +530,8 @@ namespace ProjectB
 						break;
 				}
 
+				// 키입력 방지
+				ClearInput();
 				ConsoleKey key = Console.ReadKey(true).Key;
 
 				switch (key)
@@ -596,6 +604,9 @@ namespace ProjectB
 				Console.WriteLine("━━━━━━━━━━━━━━━━━━━━━━━");
 				Console.SetCursorPosition(startX, line++);
 				Console.WriteLine("Z:선택 X:나가기");
+
+				// 키입력 방지
+				ClearInput();
 				ConsoleKey key = Console.ReadKey(true).Key;
 
 				switch (key)
@@ -657,6 +668,9 @@ namespace ProjectB
 				Console.WriteLine($"{(isChange == false ? "Z : 바꾸기 X:나가기" : "바꾸시겠습니까?")}"); // isChange 에 따라 설명변경
 				Console.SetCursorPosition(startX, line++);
 				Console.WriteLine("━━━━━━━━━━━━━━━━━━━━━━━");
+
+				// 키입력 방지
+				ClearInput();
 				ConsoleKey skillInfoKey = Console.ReadKey(true).Key;
 
 				switch (skillInfoKey)
@@ -939,6 +953,8 @@ namespace ProjectB
 				Console.SetCursorPosition(1, battleStartY + 7); // 19
 				Console.WriteLine("┗━━━━━━━━━━━━━━━━━━━━━━━━━━┛");
 
+				// 키입력 방지
+				ClearInput();
 				ConsoleKey key = Console.ReadKey(true).Key;
 
 				switch (key)
@@ -1033,6 +1049,8 @@ namespace ProjectB
 				Console.SetCursorPosition(1, battleStartY + 9);
 				Console.WriteLine($" [{(skillIndex == 2 ? "▶" : " ")}] {skillNames[2],-5}  [{(skillIndex == 3 ? "▶" : " ")}] {skillNames[3],-5}");
 
+				// 키입력 방지
+				ClearInput();
 				ConsoleKey key = Console.ReadKey(true).Key;
 
 				switch (key)
@@ -1121,6 +1139,12 @@ namespace ProjectB
 		static void ClearBattleText()
 		{
 			ClearLine(1, 13, 100, 2);
+		}
+
+		public static void ClearInput()
+		{
+			while (Console.KeyAvailable)
+				Console.ReadKey(true);
 		}
 	}
 }
