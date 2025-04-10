@@ -11,7 +11,6 @@ namespace ProjectB
 		public const int battleStartY = 12; // 배틀 출력시 시작 Y
 		public static Position battleLogPos = new Position(25, 14);
 		public static Position inventoryPos = new Position(22, 0);
-
 		public static void PrintStart()
 		{
 			Console.Clear();
