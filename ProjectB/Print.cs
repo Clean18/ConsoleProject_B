@@ -792,15 +792,15 @@ namespace ProjectB
 
 			// 내 푸키먼 출력
 			int nextLine = PrintMyPokemon(myPoke);
-
-			Console.SetCursorPosition(1, nextLine);
+			PrintBattleTextLine();
+			Console.SetCursorPosition(1, nextLine + 1); //13
 			string text = $"앗! 야생의 {Battle.enemyPokemon!.Name} 이(가) 튀어나왔다!";
 			foreach (char c in text)
 			{
 				Console.Write(c);
 				Thread.Sleep(100);
 			}
-			Console.SetCursorPosition(1, nextLine + 1);
+			Console.SetCursorPosition(1, nextLine + 2); //14
 			string text2 = $"가랏! {myPoke.Name}!";
 			foreach (char c in text2)
 			{
@@ -860,7 +860,7 @@ namespace ProjectB
 		public static void PrintBattle(Player player)
 		{
 			// TODO : 배틀
-			ClearLine(0, battleStartY + 0, 50, 2); // 내 푸키먼 체력바 아래로 2칸 지우기
+			ClearLine(0, battleStartY + 1, 50, 2); // 내 푸키먼 체력바 아래로 2칸 지우기
 
 			//string text1 = "┏━━━━━━━━━━━━━━━━━━━━━━━━━━┓";
 			//string text2 = "┃ [▶] 싸우다  [▶] 가방     ┃";
@@ -914,10 +914,7 @@ namespace ProjectB
 			int menuIndex = 1;
 			while (Battle.state == BattleState.PlayerTurn)
 			{
-				Console.SetCursorPosition(1, battleStartY + 0);
-				Console.WriteLine("===========================");
-				Console.SetCursorPosition(1, battleStartY + 3);
-				Console.WriteLine("===========================");
+				PrintBattleTextLine();
 				Console.SetCursorPosition(1, battleStartY + 4); // battleStartY = 12
 				Console.WriteLine("┏━━━━━━━━━━━━━━━━━━━━━━━━━━┓");
 				Console.SetCursorPosition(1, battleStartY + 5);
@@ -1012,14 +1009,10 @@ namespace ProjectB
 
 			while (Battle.state == BattleState.PlayerSkill)
 			{
-				Console.SetCursorPosition(1, battleStartY + 0);
-				Console.WriteLine("===========================");
-				Console.SetCursorPosition(1, battleStartY + 1);
+				Console.SetCursorPosition(1, battleStartY + 8);
 				Console.WriteLine($" [{(skillIndex == 0 ? "▶" : " ")}] {skillNames[0],-5}  [{(skillIndex == 1 ? "▶" : " ")}] {skillNames[1],-5}");
-				Console.SetCursorPosition(1, battleStartY + 2);
+				Console.SetCursorPosition(1, battleStartY + 9);
 				Console.WriteLine($" [{(skillIndex == 2 ? "▶" : " ")}] {skillNames[2],-5}  [{(skillIndex == 3 ? "▶" : " ")}] {skillNames[3],-5}");
-				Console.SetCursorPosition(1, battleStartY + 3);
-				Console.WriteLine("===========================");
 
 				ConsoleKey key = Console.ReadKey(true).Key;
 
@@ -1057,13 +1050,41 @@ namespace ProjectB
 						}
 						break;
 
+					case ConsoleKey.Z:
+						if (0 <= skillIndex && skillIndex > pokemon.Skills.Count)
+						{
+							// 선택한 기술 설명 출력
+						}
+						break;
+
 					case ConsoleKey.X:
 						// 다시 메뉴로
 						Battle.state = BattleState.PlayerTurn;
-						ClearLine(1, battleStartY + 1, 100, 5);
+						ClearLine(1, battleStartY + 8, 100, 3);
 						break;
 				}
+
+				if (0 <= skillIndex && skillIndex < pokemon.Skills.Count)
+				{
+					var skill = pokemon.Skills[skillIndex];
+					Console.SetCursorPosition(1, battleStartY + 1); //13
+					Console.WriteLine($"{skill.Name}/ 타입/ {skill.PokeType} {(skill.SkillType == SkillType.Physical ? "물리" : "특수")}");
+					Console.SetCursorPosition(1, battleStartY + 2); //14
+					Console.WriteLine($"위력/ {skill.Damage} PP/ {skill.CurPP}/{skill.MaxPP}");
+				}
+				else
+				{
+					ClearLine(1, 13, 100, 2);
+				}
 			}
+		}
+
+		static void PrintBattleTextLine()
+		{
+			Console.SetCursorPosition(1, battleStartY + 0);
+			Console.WriteLine("===========================");
+			Console.SetCursorPosition(1, battleStartY + 3);
+			Console.WriteLine("===========================");
 		}
 	}
 }
