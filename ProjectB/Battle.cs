@@ -92,25 +92,31 @@ namespace ProjectB
 			if (strongSkill == null)
 			{
 				strongSkill = enemyFirst.Skills[Game.globalRandom.Next(0, enemyFirst.Skills.Count)];
+
+				// TODO : 발버둥 사용
+				// 기술 포인트가 없어지면 나오는 기술. 자신도 조금 데미지를 입는다
 			}
 
-			int realDamage = GetTotalDamage(enemyFirst, myFirst, strongSkill);
+			strongSkill.UseSkill(enemyFirst, myFirst, strongSkill, true);
+			
 
-			// 상대 푸키먼이 내 푸키먼 공격
-			// 효과처리
-			// 내 푸키먼 죽으면 교체
-			// 내턴
-			strongSkill.CurPP--;
-			// 체력 0되면 죽고 PokemonChange 로 state 변경
-			string battleText = $"적의 {enemyFirst.Name}의 {strongSkill.Name}~!";
-			Print.PrintBattleText(battleText, 2, 1);
-			myFirst.TakeDamage(enemyFirst, realDamage);
+			//int realDamage = GetTotalDamage(enemyFirst, myFirst, strongSkill);
 
-			// 내 푸키먼 죽었으면 교체씬으로 아니면 내턴
-			if (myFirst.Hp <= 0)
-				state = BattleState.PokemonChange;
-			else
-				state = BattleState.PlayerTurn;
+			//// 상대 푸키먼이 내 푸키먼 공격
+			//// 효과처리
+			//// 내 푸키먼 죽으면 교체
+			//// 내턴
+			//strongSkill.CurPP--;
+			//// 체력 0되면 죽고 PokemonChange 로 state 변경
+			//string battleText = $"적의 {enemyFirst.Name}의 {strongSkill.Name}~!";
+			//Print.PrintBattleText(battleText, 2, 1);
+			//myFirst.TakeDamage(enemyFirst, realDamage);
+
+			//// 내 푸키먼 죽었으면 교체씬으로 아니면 내턴
+			//if (myFirst.Hp <= 0)
+			//	state = BattleState.PokemonChange;
+			//else
+			//	state = BattleState.PlayerTurn;
 		}
 
 		public static float TypesCalculator(PokeType attack, PokeType defense1, PokeType defense2)
@@ -265,6 +271,22 @@ namespace ProjectB
 
 					// ~는(은)  ~를(을) 차례로 꺼냈다
 					Print.PrintBattleText($"{enemyName}는(은) {enemyPokemon.Name}를(을) 차례로 꺼냈다", 2, 1);
+					return true;
+				}
+			}
+
+			// 남은 푸키먼없음
+			return false;
+		}
+
+		public static bool PlayerPokemonChange()
+		{
+			// 살아있는 푸키먼 체크
+			foreach (var poke in myParty!)
+			{
+				if (!poke.IsDead && poke.Hp > 0)
+				{
+					// 살아있는 푸키먼 있으면 교체씬으로
 					return true;
 				}
 			}

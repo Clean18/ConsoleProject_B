@@ -12,11 +12,13 @@ namespace ProjectB
 	}
 	public static class Data
 	{
+		public static int expRate = 10;
 
 		private static Dictionary<Map, List<string>>? mapData;
 		private static Dictionary<Map, List<Entity>>? mapEntityData;
 		private static Dictionary<Map, List<Tile>>? mapTileData;
 		private static Dictionary<string, Item>? itemData;
+		private static Dictionary<float, string>? damageTextData;
 
 		public static void DataInit()
 		{
@@ -24,6 +26,7 @@ namespace ProjectB
 			ItemInit();
 			MapEntityInit();
 			MapTileInit();
+			DamageTextInit();
 		}
 
 		static void MapInit()
@@ -107,6 +110,18 @@ namespace ProjectB
 				},
 			};
 		}
+		static void DamageTextInit()
+		{
+			damageTextData = new Dictionary<float, string>
+			{
+				[0f]	= "그러나 {0}에게는 효과가 없었다...",
+				[0.25f] = "그러나 효과는 미미했다",
+				[0.5f]	= "효과는 조금 부족한 듯 하다",
+				[1f]	= " ",
+				[2f]	= "효과는 뛰어났다!",
+				[4f]	= "효과는 굉장했다!!",
+			};
+		}
 
 
 		// 씬을 key로 값을 받아오는 함수들
@@ -123,5 +138,6 @@ namespace ProjectB
 		public static List<Entity> GetEntitiesData(Map map) => mapEntityData![map];
 		public static List<Tile> GetTilesData(Map map) => mapTileData![map];
 		public static Item GetItems(string itemName) => itemData![itemName];
+		public static string GetDamageText(float damageRate) => damageTextData![damageRate];
 	}
 }

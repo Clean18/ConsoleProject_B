@@ -414,9 +414,9 @@ namespace ProjectB
 			// 체력 퍼센트에 따라 체력바 색 변경
 			float hpPer = (float)pokemon.Hp / pokemon.MaxHp;
 
-			if (hpPer > 0.5f) return ConsoleColor.Green;        // 100 ~ 51
-			else if (hpPer > 0.25f) return ConsoleColor.Yellow; // 50 ~ 26
-			else return ConsoleColor.Red;                       // 25 ~ 0
+			if (hpPer > 0.6f) return ConsoleColor.Green;        // 100 ~ 51 > 60% 이상
+			else if (hpPer > 0.3f) return ConsoleColor.Yellow;  // 50 ~ 26 > 60~31%
+			else return ConsoleColor.Red;                       // 25 ~ 0 > 30% 이하
 		}
 
 		static void PrintPokemonDetail(Pokemon pokemon, int startX, int startY)
@@ -781,43 +781,36 @@ namespace ProjectB
 				Console.Write(new string(' ', Console.WindowWidth));
 				Thread.Sleep(20);
 			}
-			Console.BackgroundColor = ConsoleColor.Gray;
-			Console.Clear();
-			Thread.Sleep(100);
+			for (int i = 0; i < 2; i++)
+			{
+				Console.BackgroundColor = ConsoleColor.Gray;
+				Console.Clear();
+				Thread.Sleep(100);
 
-			Console.BackgroundColor = ConsoleColor.DarkGray;
-			Console.Clear();
-			Thread.Sleep(100);
+				Console.BackgroundColor = ConsoleColor.DarkGray;
+				Console.Clear();
+				Thread.Sleep(100);
 
-			Console.BackgroundColor = ConsoleColor.Black;
-			Console.Clear();
-			Thread.Sleep(100);
-
-			// 여기서 텍스트 출력
+				Console.BackgroundColor = ConsoleColor.Black;
+				Console.Clear();
+				Thread.Sleep(100);
+			}
 			Console.Clear();
 
 			// 상대방 출력
 			Pokemon enemyPoke = Battle.enemyPokemon!;
 			PrintEnemyPokemon(enemyPoke);
 
+			PrintBattleTextLine(); // =======
+			
+			string text = $"앗! 야생의 {Battle.enemyPokemon!.Name} 이(가) 튀어나왔다!\n 가랏! {myPoke.Name}";
+			PrintBattleText(text, 2, 1);
+
+			//string text2 = $"가랏! {myPoke.Name}!";
+			//PrintBattleText(text2, 2, 1);
+
 			// 내 푸키먼 출력
 			int nextLine = PrintMyPokemon(myPoke);
-			PrintBattleTextLine();
-			Console.SetCursorPosition(1, nextLine + 1); //13
-			string text = $"앗! 야생의 {Battle.enemyPokemon!.Name} 이(가) 튀어나왔다!";
-			foreach (char c in text)
-			{
-				Console.Write(c);
-				Thread.Sleep(100);
-			}
-			Console.SetCursorPosition(1, nextLine + 2); //14
-			string text2 = $"가랏! {myPoke.Name}!";
-			foreach (char c in text2)
-			{
-				Console.Write(c);
-				Thread.Sleep(100);
-			}
-			Thread.Sleep(1000);
 
 			// Battle 클래스에 정보 저장
 			// 상대 푸키먼 정보는 타일에서 저장
@@ -912,13 +905,21 @@ namespace ProjectB
 				case BattleState.PlayerRun:
 					break;
 
+				case BattleState.PokemonChange:
+					break;
+
 				case BattleState.Win:
 					// TODO : 승리시
 					Battle.state = BattleState.Intro;
 					Game.sceneTable.Pop();
+					Console.Clear();
 					break;
 
 				case BattleState.Lose:
+					// TODO : 패배시
+					Battle.state = BattleState.Intro;
+					Game.sceneTable.Pop();
+					Console.Clear();
 					break;
 			}
 		}
@@ -1074,11 +1075,12 @@ namespace ProjectB
 							// 기술 사용
 							// 임시로 전부 공격
 							ClearBattleText();
+							ClearLine(0, 16, 80, 7);
 							var skill = pokemon.Skills[skillIndex];
 							if (skill.CurPP > 0)
 							{
 								// 공격
-								skill.Use(Battle.myPokemon!, Battle.enemyPokemon!, skill);
+								skill.UseSkill(Battle.myPokemon!, Battle.enemyPokemon!, skill, false);
 								// 상대 기절 체크
 								// if 기절
 								// 내 경험치 상승

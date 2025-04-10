@@ -108,6 +108,16 @@ namespace ProjectB
 		private int GetNextEXP(int level)
 		{
 			// TODO : 경험치 테이블
+			if (0 <= level && level < 20) // 1 ~ 19
+				return level * level * 2;
+			else if (20 <= level && level < 40) // 20 ~ 39
+				return level * level * 4;
+			else if (40 <= level && level < 59) // 40 ~ 59
+				return level * level * 6;
+			else if (60 <= level && level < 79) // 60 ~ 79
+				return level * level * 8;
+			else if (80 <= level && level <= 100) // 80 ~ 100
+				return level * level * 10;
 			return level * level * 10;
 		}
 
