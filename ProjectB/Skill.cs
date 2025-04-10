@@ -88,9 +88,9 @@
 						return;
 					}
 				}
-				// 공격 끝나면 턴 바꾸기
-				Battle.state = isDefenderEnemy ? BattleState.EnemyTurn : BattleState.PlayerTurn;
 			}
+			// 공격 끝나면 턴 바꾸기
+			Battle.state = isDefenderEnemy ? BattleState.EnemyTurn : BattleState.PlayerTurn;
 		}
 	}
 }

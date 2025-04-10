@@ -38,5 +38,7 @@ namespace ProjectB
 		}
 
 		public abstract void Use();
-    }
+
+		public abstract void Use(Pokemon pokemon);
+	}
 }

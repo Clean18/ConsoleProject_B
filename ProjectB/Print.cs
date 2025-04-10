@@ -1,5 +1,6 @@
 ﻿using ProjectB.Entities;
 using ProjectB.Structs;
+using System.Numerics;
 
 namespace ProjectB
 {
@@ -9,6 +10,7 @@ namespace ProjectB
 		public const int startY = 3;    // 화면 여백
 		public const int battleStartY = 12; // 배틀 출력시 시작 Y
 		public static Position battleLogPos = new Position(25, 14);
+		public static Position inventoryPos = new Position(22, 0);
 
 		public static void PrintStart()
 		{
@@ -197,9 +199,8 @@ namespace ProjectB
 								break;
 
 							case 2:
-								Console.SetCursorPosition(0, player.visionY * 2 + 1);
-								Console.WriteLine("가방씬으로");
 								// 가방 씬
+								Game.sceneTable.Push(Scene.Inventory);
 								break;
 
 							case 3:
@@ -776,6 +777,93 @@ namespace ProjectB
 		public static void PrintInventory(Player player)
 		{
 			// TODO : 인벤토리 출력
+			ItemType currentPage = ItemType.Item;
+			int selectIndex = 0;
+
+			// 배경 검은색 포켓은 흰색글자 아이템은 마젠타글자
+			// "  ◀ ▶ POCKET    ▲ ▼ ITEMS  "
+			// "ItemType
+			// "━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+			ClearLine(inventoryPos.x, inventoryPos.y, 100, 25);
+			while (Game.sceneTable.Peek() == Scene.Inventory)
+			{
+				Console.SetCursorPosition(inventoryPos.x, inventoryPos.y);
+				Console.BackgroundColor = ConsoleColor.White;
+				Console.ForegroundColor = ConsoleColor.Black;
+				Console.Write("  ◀ ▶ POCKET    ");
+				Console.ForegroundColor = ConsoleColor.Magenta;
+				Console.Write("▲ ▼ ITEMS  ");
+				Console.ResetColor();
+				Console.SetCursorPosition(inventoryPos.x, inventoryPos.y + 1);
+				Console.WriteLine($"[{currentPage}]            ");
+				Console.SetCursorPosition(inventoryPos.x, inventoryPos.y + 2);
+				Console.WriteLine("━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+
+				// 아이템 정보 출력
+				var invenData = player.Inventory[currentPage];
+				Console.SetCursorPosition(inventoryPos.x, inventoryPos.y + 3);
+				ClearLine(inventoryPos.x, inventoryPos.y + 3, 20, 15);
+				for (int i = 0; i < invenData.Count; i++)
+				{
+					Console.WriteLine($"{(i == selectIndex ? "[▶]" : "[ ]")} {invenData[i].Name} x {invenData[i].CurCount}");
+				}
+				Console.SetCursorPosition(inventoryPos.x, inventoryPos.y + 3 + invenData.Count);
+				Console.WriteLine((selectIndex == invenData.Count ? "[▶] 나가기" : "[ ] 나가기")); //$" 나가기"
+
+				// 키입력 방지
+				ClearInput();
+				ConsoleKey invenKey = Console.ReadKey(true).Key;
+
+				switch (invenKey)
+				{
+					case ConsoleKey.UpArrow:
+						selectIndex--;
+						if (selectIndex < 0)
+							selectIndex = invenData.Count;
+						break;
+					case ConsoleKey.LeftArrow:
+						selectIndex = 0;
+						if (currentPage == ItemType.Item) currentPage = ItemType.TMHM;
+						else if (currentPage == ItemType.Ball) currentPage = ItemType.Item;
+						else if (currentPage == ItemType.KeyItem) currentPage = ItemType.Ball;
+						else if (currentPage == ItemType.TMHM) currentPage = ItemType.KeyItem;
+						break;
+
+					case ConsoleKey.DownArrow:
+						selectIndex++;
+						if (selectIndex > invenData.Count)
+							selectIndex = 0;
+						break;
+					case ConsoleKey.RightArrow:
+						selectIndex = 0;
+						if (currentPage == ItemType.Item) currentPage = ItemType.Ball;
+						else if (currentPage == ItemType.Ball) currentPage = ItemType.KeyItem;
+						else if (currentPage == ItemType.KeyItem) currentPage = ItemType.TMHM;
+						else if (currentPage == ItemType.TMHM) currentPage = ItemType.Item;
+						break;
+
+					case ConsoleKey.Z:
+						if (selectIndex == invenData.Count)
+						{
+							// 나가기
+							Game.sceneTable.Pop();
+							ClearLine(inventoryPos.x, inventoryPos.y, 100, 25);
+						}
+						else
+						{
+							Item item = invenData[selectIndex];
+							Print.PrintItemUseParty(item);
+							Console.Clear();
+						}
+						break;
+
+					case ConsoleKey.X:
+						Game.sceneTable.Pop();
+						ClearLine(inventoryPos.x, inventoryPos.y, 100, 25);
+						break;
+
+				}
+			}
 		}
 
 		public static void PrintMyInfo(Player player)
@@ -819,7 +907,7 @@ namespace ProjectB
 			PrintEnemyPokemon(enemyPoke);
 
 			PrintBattleTextOutLine(); // =======
-			
+
 			string text = $"앗! 야생의 {Battle.enemyPokemon!.Name} 이(가) 튀어나왔다!\n 가랏! {myPoke.Name}";
 			PrintBattleText(text, 2, 1);
 
@@ -1035,7 +1123,7 @@ namespace ProjectB
 			string[] skillNames = new string[4];
 			for (int i = 0; i < 4; i++)
 			{
-				var skill = pokemon.Skills.Count > i? pokemon.Skills[i] : null;
+				var skill = pokemon.Skills.Count > i ? pokemon.Skills[i] : null;
 				skillNames[i] = skill == null ? "    --    " : skill.Name!;
 			}
 
@@ -1146,7 +1234,7 @@ namespace ProjectB
 
 		static void PrintPlayerRun()
 		{
-			// 먼저 무조건 도망가게
+			// TODO : 야생 도망확률
 			while (Battle.state == BattleState.PlayerRun)
 			{
 				if (Battle.isTrainer)
@@ -1160,6 +1248,76 @@ namespace ProjectB
 					// 야생이면 무조건 도망
 					PrintBattleText(" 성공적으로 도망쳤다!", 2, 1);
 					Battle.EndBattle();
+				}
+			}
+		}
+
+		public static void PrintItemUseParty(Item item)
+		{
+			List<Pokemon> party = Game.Player.Party;
+
+			Console.Clear();
+
+			int partyIndex = 0;
+
+			while (true)
+			{
+				// 플레이어가 가진 포켓몬들 전부 출력
+				for (int i = 0; i < party.Count; i++)
+				{
+					Console.SetCursorPosition(startX, startY + i); // 줄마다 위치 이동
+					PrintPokemonStatus(party[i], i == partyIndex); // 포켓몬 스탯 출력(선택 표시)
+				}
+				// [ ] 취소
+				Console.SetCursorPosition(startX, startY + party.Count);
+				Console.WriteLine(partyIndex == party.Count ? "[▶]  취소" : "[ ]  취소");
+				// ------------------------------
+				Console.SetCursorPosition(startX, startY + party.Count + 2);
+				Console.WriteLine("==============================");
+				// Z:선택 X:취소
+				//Console.SetCursorPosition(startX, startY + party.Count + 3);
+				//Console.WriteLine("  Z:선택   X:취소  ");
+
+				// 키입력 방지
+				ClearInput();
+				ConsoleKey partyKey = Console.ReadKey(true).Key;
+
+				switch (partyKey)
+				{
+					case ConsoleKey.UpArrow:
+					case ConsoleKey.LeftArrow:
+						// i --
+						partyIndex--;
+						if (partyIndex < 0)
+							partyIndex = party.Count;
+						break;
+
+					case ConsoleKey.DownArrow:
+					case ConsoleKey.RightArrow:
+						// i ++
+						partyIndex++;
+						if (partyIndex > party.Count)
+							partyIndex = 0;
+						break;
+
+					case ConsoleKey.Z:
+						// 선택
+						if (partyIndex == party.Count)
+						{
+							Console.Clear();
+							return;
+						}
+						else
+						{
+							Pokemon pokemon = Game.Player.Party[partyIndex];
+							item.Use(pokemon);
+						}
+						break;
+
+					case ConsoleKey.X:
+					case ConsoleKey.Escape:
+						Console.Clear();
+						return;
 				}
 			}
 		}

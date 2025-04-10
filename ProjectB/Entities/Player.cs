@@ -206,5 +206,24 @@ namespace ProjectB.Entities
 			}
 			return null;
 		}
+
+		public void InventoryUpdate()
+		{
+			// 키값으로 반복
+			foreach (ItemType type in Inventory.Keys)
+			{
+				List<Item> newList = new List<Item>();
+
+				// 개수가 1개이상인 아이템들로 인벤토리 갱신
+				foreach (var item in Inventory[type])
+				{
+					if (item.CurCount > 0)
+					{
+						newList.Add(item);
+					}
+				}
+				Inventory[type] = newList;
+			}
+		}
 	}
 }

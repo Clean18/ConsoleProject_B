@@ -98,25 +98,6 @@ namespace ProjectB
 			}
 
 			strongSkill.UseSkill(enemyFirst, myFirst, strongSkill, false);
-			
-
-			//int realDamage = GetTotalDamage(enemyFirst, myFirst, strongSkill);
-
-			//// 상대 푸키먼이 내 푸키먼 공격
-			//// 효과처리
-			//// 내 푸키먼 죽으면 교체
-			//// 내턴
-			//strongSkill.CurPP--;
-			//// 체력 0되면 죽고 PokemonChange 로 state 변경
-			//string battleText = $"적의 {enemyFirst.Name}의 {strongSkill.Name}~!";
-			//Print.PrintBattleText(battleText, 2, 1);
-			//myFirst.TakeDamage(enemyFirst, realDamage);
-
-			//// 내 푸키먼 죽었으면 교체씬으로 아니면 내턴
-			//if (myFirst.Hp <= 0)
-			//	state = BattleState.PokemonChange;
-			//else
-			//	state = BattleState.PlayerTurn;
 		}
 
 		public static float TypesCalculator(PokeType attack, PokeType defense1, PokeType defense2)

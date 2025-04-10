@@ -83,6 +83,7 @@ namespace ProjectB
 					new FieldItem('B', new Position(2, 2), Direction.Down, new PokeBall(5), color: ConsoleColor.Red),
 					new FieldItem('B', new Position(2, 3), Direction.Down, new PokeBall(3), color: ConsoleColor.Red),
 					new FieldItem('B', new Position(2, 4), Direction.Down, new PokeBall(2), color: ConsoleColor.Red),
+					new FieldItem('P', new Position(2, 5), Direction.Down, new Potion(2), color: ConsoleColor.Blue),
 					new FieldPokemon('@', new Position(5, 1), Direction.Down, new Bulbasaur(5), color: ConsoleColor.White, bgColor: ConsoleColor.DarkGreen),
 					new FieldPokemon('@', new Position(6, 1), Direction.Down, new Charmander(5), color: ConsoleColor.White, bgColor: ConsoleColor.Red),
 					new FieldPokemon('@', new Position(7, 1), Direction.Down, new Squirtle(5), color: ConsoleColor.White, bgColor: ConsoleColor.Blue),

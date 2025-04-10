@@ -15,11 +15,19 @@ namespace ProjectB.Items
 
 		public override void Use()
 		{
+			if (Game.sceneTable.Peek() != Scene.Battle)
+				return;
+
 			// 배틀중일 때
 				// 상대가 트레이너가 아닐 때
 			// curCount가 1 이상일 때
 
 			// 볼던지기
+		}
+
+		public override void Use(Pokemon pokemon)
+		{
+
 		}
 	}
 }

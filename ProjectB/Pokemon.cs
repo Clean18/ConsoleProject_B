@@ -183,6 +183,11 @@ namespace ProjectB
 				return;
 
 			this.Hp -= damage;
+			if (this.Hp <= 0)
+			{
+				this.Hp = 0;
+				this.IsDead = true;
+			}
 
 			// 푸키먼 체력 갱신
 			// 내 푸키먼인지 아닌지 골라야되네
@@ -191,12 +196,6 @@ namespace ProjectB
 			else if (this == Battle.enemyPokemon)
 				Print.PrintEnemyPokemon(this);
 			Thread.Sleep(2000);
-
-			if (this.Hp <= 0)
-			{
-				this.Hp = 0;
-				this.IsDead = true;
-			}
 		}
 
 		public void GetEXP(int exp)
@@ -209,10 +208,23 @@ namespace ProjectB
 			while (this.CurExp >= this.NextExp)
 			{
 				this.CurExp -= this.NextExp;			// 경험치 차감
+				Print.PrintMyPokemon(this);				// 갱신
 				this.Levelup();							// 레벨업 실행
 				this.NextExp = GetNextEXP(this.Level);  // 다음 필요경험치 변경
-				Print.PrintMyPokemon(this);				// 갱신
 			}
+		}
+
+		public bool PokemonHeal(int healValue)
+		{
+			if (this.Hp == this.MaxHp)
+				return false;
+
+			this.Hp += healValue;
+			if (this.Hp > this.MaxHp)
+			{
+				this.Hp = this.MaxHp;
+			}
+			return true;
 		}
 	}
 }
